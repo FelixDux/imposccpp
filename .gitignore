@@ -1,0 +1,6 @@
+*.swp
+TODO.txt
+addfiles.bash
+addlib.bash
+
+build/
