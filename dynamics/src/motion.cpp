@@ -24,10 +24,12 @@ void MotionAtTime::reset_impact(const Impact &impact) const
 {
 	impact_time = impact.get_time();
 
-	cos_coefficient = params.obstacle_offset - gamma * cos(impact_time);
+	cos_coefficient = params.obstacle_offset - gamma * cos(
+			params.forcing_frequency*impact_time);
 	
 	sin_coefficient = -(params.coefficient_of_restitution * impact.get_velocity()) 
-		- params.forcing_frequency * gamma * sin(impact_time); 
+		+ params.forcing_frequency * gamma * sin(
+				params.forcing_frequency*impact_time); 
 }
 			
 StateOfMotion MotionAtTime::operator() (Time time) const
@@ -64,7 +66,10 @@ MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impa
 
 		if (release_impact.new_impact)
 		{
-			trajectory.push_back( {.t = release_impact.impact.get_time(), .x = motion.parameters().obstacle_offset, .v = impact.get_velocity()});
+			trajectory.push_back( {
+				.t = release_impact.impact.get_time(),
+				.x = motion.parameters().obstacle_offset,
+				.v = impact.get_velocity()});
 		}
 	}
 }
@@ -84,9 +89,10 @@ vector<StateOfMotion> MotionBetweenImpacts::to_next_impact(const Impact &impact)
 		auto current_state = motion(current_time);
 
 		// Update step size - this is the bisection search algorithm
-		if (current_state.x <= offset)
+		if (current_state.x < offset)
 		{
-			// only record the state if it is physical (i.e. non-penetrating)
+			// only record the state if it is physical
+			// (i.e. non-penetrating)
 			trajectory.push_back(current_state);
 
 			if (step_size < 0)
@@ -94,12 +100,17 @@ vector<StateOfMotion> MotionBetweenImpacts::to_next_impact(const Impact &impact)
 				step_size *= -0.5;
 			}
 		}
-		else
+		else if (current_state.x > offset)
 		{
 			if (step_size > 0)
 			{
 				step_size *= -0.5;
 			}
+		}
+		else
+		{
+			trajectory.push_back(current_state);
+			step_size = 0;
 		}
 	}
 

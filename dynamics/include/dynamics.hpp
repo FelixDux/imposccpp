@@ -66,6 +66,9 @@ namespace dynamics
 				return iterate(impact, num_iterations);
 			};
 
+			// Generate a singularity set
+			std::vector<Impact> singularity_set(unsigned int num_points) const;
+
 			// Accessors
 			bool is_valid() const {return motion.is_valid();}
 

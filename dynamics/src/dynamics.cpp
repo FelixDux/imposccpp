@@ -83,4 +83,27 @@ vector<Impact> ImpactMap::iterate(const Impact &impact, unsigned int num_iterati
 	copy(begin(trajectory), end(trajectory), back_inserter(result));
 	return result;
 }
+
+// Generate a singularity set
+std::vector<Impact> ImpactMap::singularity_set(unsigned int num_points) const
+{
+	list<Impact> trajectory;
+
+	Time delta_time = motion.converter().get_period()/num_points;
+
+	Time starting_time = 0;
+
+	for (int i=0; i < num_points; i++)
+	{
+		trajectory.push_back(apply(Impact(motion.converter(), starting_time, 0)));
+
+		starting_time += delta_time;
+	}
+
+	// We've grown the trajectory as a list but return it as a vector
+	vector<Impact> result;
+	result.reserve(trajectory.size());
+	copy(begin(trajectory), end(trajectory), back_inserter(result));
+	return result;
+}
 }

@@ -36,7 +36,7 @@ Phase PhaseConverter::time_to_phase(Time time) const
 {
 	auto scaled_time = time/period;
 
-	return time - floor(time);
+	return scaled_time - floor(scaled_time);
 }
 
 Time PhaseConverter::time_into_cycle(Phase phase) const
