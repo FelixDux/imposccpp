@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-using namespace dynamics;
+namespace dynamics {
 
 Sticking::Sticking(const Parameters &parameters):phase_converter(parameters.forcing_frequency)
 {
@@ -51,4 +51,5 @@ Sticking::ReleaseImpact Sticking::check_impact(const Impact &impact) const
 	{
 		return {.new_impact = false, .impact = impact};
 	}
+}
 }

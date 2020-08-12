@@ -2,11 +2,13 @@
 
 #include <math.h>
 
-using namespace dynamics;
 using namespace std;
 
+namespace dynamics {
+
 MotionAtTime::MotionAtTime(const Parameters &parameters) : 
-		params(parameters), impact_time(0),cos_coefficient(0),sin_coefficient(0)
+		params(parameters), impact_time(0),
+		cos_coefficient(0), sin_coefficient(0)
 {
 	if (0 != params.forcing_frequency)
 	{
@@ -49,7 +51,10 @@ MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impa
 {
 	trajectory.clear();
 
-	trajectory.push_back( {.t = impact.get_time(), .x = motion.parameters().obstacle_offset, .v = impact.get_velocity()});
+	trajectory.push_back( {
+			.t = impact.get_time(), 
+			.x = motion.parameters().obstacle_offset, 
+			.v = impact.get_velocity()});
 	
 	auto release_impact = sticking.check_impact(impact);
 
@@ -104,3 +109,5 @@ vector<StateOfMotion> MotionBetweenImpacts::to_next_impact(const Impact &impact)
 	copy(begin(trajectory), end(trajectory), back_inserter(result));
 	return result;
 }
+}
+

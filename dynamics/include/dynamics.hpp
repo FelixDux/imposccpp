@@ -58,9 +58,18 @@ namespace dynamics
 
 			// Iterate the map 
 			std::vector<Impact> iterate(const Impact &impact, unsigned int num_iterations) const;
+			// Convenient overload
+			std::vector<Impact> iterate(Phase phi, Velocity v, unsigned int num_iterations) const
+			{
+				auto t = motion.converter().time_into_cycle(phi);
+				Impact impact(motion.converter(), t, v);
+				return iterate(impact, num_iterations);
+			};
 
 			// Accessors
 			bool is_valid() const {return motion.is_valid();}
+
+			PhaseConverter converter() const {return motion.converter();}
 
 		private:
 			MotionBetweenImpacts motion;

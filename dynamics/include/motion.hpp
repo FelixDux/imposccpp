@@ -41,7 +41,7 @@ namespace dynamics
 
 			bool is_valid() const {return params.forcing_frequency != 0;}
 
-			const Parameters &parameters() const;
+			const Parameters &parameters() const {return params;}
 
 		private: 
 			Scalar gamma;

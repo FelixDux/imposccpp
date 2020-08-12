@@ -2,9 +2,9 @@
 
 #include <math.h>
 
-using namespace dynamics;
 using namespace std;
 
+namespace dynamics {
 
 ChatterChecker::ChatterChecker(const Parameters &parameters, Velocity velocity_threshold, unsigned int count_threshold):
 			v_threshold(velocity_threshold),
@@ -82,4 +82,5 @@ vector<Impact> ImpactMap::iterate(const Impact &impact, unsigned int num_iterati
 	result.reserve(trajectory.size());
 	copy(begin(trajectory), end(trajectory), back_inserter(result));
 	return result;
+}
 }

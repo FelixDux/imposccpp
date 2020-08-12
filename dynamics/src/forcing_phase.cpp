@@ -11,7 +11,7 @@
 #include <math.h>
 #include <cmath>
 
-using namespace dynamics;
+namespace dynamics {
 
 // Construction
 PhaseConverter::PhaseConverter(Frequency omega):frequency(omega)
@@ -59,4 +59,4 @@ Time PhaseConverter::forward_to_phase(Time time, Phase phase) const
 	return time + period * phase_change;
 }
 
-
+}
