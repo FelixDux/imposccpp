@@ -7,14 +7,31 @@
 #include <vector>
 #include <math.h>
 
-TEST_CASE( "Phase converter handles invalid values", "[phase]" ) {
-	dynamics::PhaseConverter zero_freq(0);
-    	REQUIRE( !zero_freq.is_valid() );
-    	REQUIRE( zero_freq.get_validity() == dynamics::PhaseConverter::Validity::zero_frequency );
 
-	dynamics::PhaseConverter negative_freq(-3);
-    	REQUIRE( !negative_freq.is_valid() );
-    	REQUIRE( negative_freq.get_validity() == dynamics::PhaseConverter::Validity::negative_frequency );
+SCENARIO( "Phase converter handles invalid values", "[phase]" ) {
+	GIVEN("A zero frequency") {
+		double f = 0;
+		WHEN ("A phase converter is initialised") { 
+			dynamics::PhaseConverter zero_freq(f);
+
+			THEN("It is flagged as invalid") { 
+				REQUIRE( !zero_freq.is_valid() ); 
+				REQUIRE( zero_freq.get_validity() == dynamics::PhaseConverter::Validity::zero_frequency );
+			}
+		}
+	}
+
+	GIVEN("A negative frequency") {
+		double f = -3.4;
+		WHEN ("A phase converter is initialised") { 
+			dynamics::PhaseConverter negative_freq(f);
+
+			THEN("It is flagged as invalid") { 
+				REQUIRE( !negative_freq.is_valid() ); 
+				REQUIRE( negative_freq.get_validity() == dynamics::PhaseConverter::Validity::negative_frequency );
+			}
+		}
+	}
 }
 
 TEST_CASE( "Phase converter generates correct period", "[phase]" ) {
