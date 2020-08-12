@@ -20,3 +20,11 @@ target_link_libraries (imposc PUBLIC dynamics)
 add_subdirectory (charts)
 target_link_libraries (imposc PUBLIC charts)
 
+# Testing
+set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/catch)
+#add_library(Catch2::Catch IMPORTED INTERFACE)
+#set_property(TEST Catch2::Catch PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CATCH_INCLUDE_DIR}")
+
+enable_testing ()
+add_subdirectory (test)
+
