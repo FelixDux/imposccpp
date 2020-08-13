@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include "parameters.hpp"
 #include "forcing_phase.hpp"
 
 #include <cmath>
@@ -7,6 +8,124 @@
 #include <math.h>
 
 using namespace dynamics;
+
+SCENARIO( "Parameters class raises exception when incorrectly initalised ", "[parameters]") {
+	Frequency good_frequency = 2.8;
+	Scalar good_r = 0.8;
+	Displacement good_offset = 0;
+
+	GIVEN("A zero frequency") {
+		Frequency f = 0;
+
+		WHEN("A set of parameters is initialised") 
+		{
+			bool exception_happened = false;
+			try {
+				Parameters p(f, good_r, good_offset);
+			}
+			catch (const ParameterError &e) {
+				THEN("An exception is raised") {
+					exception_happened = true;
+					REQUIRE_THAT(e.what(), Catch::Contains("forcing frequency"));
+				}
+			}
+			REQUIRE( exception_happened );
+		}
+	}
+
+	GIVEN("A negative frequency") {
+		Frequency f = -3.7;
+
+		WHEN("A set of parameters is initialised") 
+		{
+			bool exception_happened = false;
+			try {
+				Parameters p(f, good_r, good_offset);
+			}
+			catch (const ParameterError &e) {
+				THEN("An exception is raised") {
+					exception_happened = true;
+					REQUIRE_THAT(e.what(), Catch::Contains("forcing frequency"));
+				}
+			}
+			REQUIRE( exception_happened );
+		}
+	}
+
+	GIVEN("A frequency of 1") {
+		Frequency f = 1;
+
+		WHEN("A set of parameters is initialised") 
+		{
+			bool exception_happened = false;
+			try {
+				Parameters p(f, good_r, good_offset);
+			}
+			catch (const ParameterError &e) {
+				THEN("An exception is raised") {
+					exception_happened = true;
+					REQUIRE_THAT(e.what(), Catch::Contains("forcing frequency"));
+				}
+			}
+			REQUIRE( exception_happened );
+		}
+	}
+
+	GIVEN("A coefficient of restitution greater than 1") {
+		Scalar r = 1.1;
+
+		WHEN("A set of parameters is initialised") 
+		{
+			bool exception_happened = false;
+			try {
+				Parameters p(good_frequency, r, good_offset);
+			}
+			catch (const ParameterError &e) {
+				THEN("An exception is raised") {
+					exception_happened = true;
+					REQUIRE_THAT(e.what(), Catch::Contains("coefficient of restitution"));
+				}
+			}
+			REQUIRE( exception_happened );
+		}
+	}
+
+	GIVEN("A coefficient of restitution less than 0") {
+		Scalar r = -1.1;
+
+		WHEN("A set of parameters is initialised") 
+		{
+			bool exception_happened = false;
+			try {
+				Parameters p(good_frequency, r, good_offset);
+			}
+			catch (const ParameterError &e) {
+				THEN("An exception is raised") {
+					exception_happened = true;
+					REQUIRE_THAT(e.what(), Catch::Contains("coefficient of restitution"));
+				}
+			}
+			REQUIRE( exception_happened );
+		}
+	}
+
+	GIVEN("A valid set of parameter values") {
+
+		WHEN("A set of parameters is initialised") 
+		{
+			bool exception_happened = false;
+			try {
+				Parameters p(good_frequency, good_r, good_offset);
+			}
+			catch ( ... ) {
+				exception_happened = true;
+			}
+			THEN("No exception is raised") {
+				REQUIRE( !exception_happened );
+			}
+		}
+	}
+}
 
 SCENARIO( "Phase converter handles invalid values", "[phase]" ) {
 	GIVEN("A zero frequency") {

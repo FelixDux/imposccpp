@@ -39,7 +39,7 @@ namespace dynamics
 
 			StateOfMotion operator() (Time time) const;
 
-			bool is_valid() const {return params.forcing_frequency != 0;}
+			bool is_valid() const {return params.get_forcing_frequency() != 0;}
 
 			const Parameters &parameters() const {return params;}
 
@@ -68,7 +68,7 @@ namespace dynamics
 					SearchParameters search_parameters={.initial_step_size=0.1, .minimum_step_size=0.000001}):
 					sticking(parameters),
 					search(search_parameters),
-					offset(parameters.obstacle_offset),
+					offset(parameters.get_obstacle_offset()),
 					motion(parameters) {};
 
 			std::vector<StateOfMotion> to_next_impact(const Impact &impact) const;

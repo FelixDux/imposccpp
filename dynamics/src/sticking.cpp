@@ -5,16 +5,16 @@
 
 namespace dynamics {
 
-Sticking::Sticking(const Parameters &parameters):phase_converter(parameters.forcing_frequency)
+Sticking::Sticking(const Parameters &parameters):phase_converter(parameters.get_forcing_frequency())
 {
-	if (1 <= parameters.obstacle_offset)
+	if (1 <= parameters.get_obstacle_offset())
 	{
 		// No sticking
 		phase_in = 0;
 		phase_out = 0;
 	}
-	else if (-1 >= parameters.obstacle_offset ||
-			!phase_converter.is_valid()) // Traps case of forcing_frequency==0
+	else if (-1 >= parameters.get_obstacle_offset() ||
+			!phase_converter.is_valid()) // Traps case of.get_forcing_frequency()==0
 	{
 		// Sticking for all phases
 		phase_in = 1;
@@ -22,10 +22,10 @@ Sticking::Sticking(const Parameters &parameters):phase_converter(parameters.forc
 	}
 	else
 	{ 
-		// (OK to divide by forcing_frequency because zero case trapped above)
-		auto angle = acos(parameters.obstacle_offset); 
-		auto phase1 = angle/parameters.forcing_frequency; 
-		auto phase2 = (2 * M_PI - angle)/parameters.forcing_frequency;
+		// (OK to divide by.get_forcing_frequency() because zero case trapped above)
+		auto angle = acos(parameters.get_obstacle_offset()); 
+		auto phase1 = angle/parameters.get_forcing_frequency(); 
+		auto phase2 = (2 * M_PI - angle)/parameters.get_forcing_frequency();
 
 		if (sin(angle) < 0)
 		{
