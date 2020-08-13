@@ -18,6 +18,7 @@
 
 #include "types.hpp"
 #include "forcing_phase.hpp"
+#include <math.h>
 
 namespace dynamics
 {
@@ -37,6 +38,12 @@ namespace dynamics
 			Time get_time() const {return t;}
 			Velocity get_velocity() const {return v;}
 
+			bool almost_equal(const Impact &other) const
+			{
+				const float tolerance = 0.001;
+
+				return (fabs(v - other.v) < tolerance && fabs(phi - other.phi));
+			}
 		private:
 			Phase phi;
 			Time t;

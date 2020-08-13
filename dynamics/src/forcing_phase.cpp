@@ -59,4 +59,13 @@ Time PhaseConverter::forward_to_phase(Time time, Phase phase) const
 	return time + period * phase_change;
 }
 
+unsigned int PhaseConverter::difference_in_periods(Time t1, Time t2) const
+{
+	auto delta_time = fabs(t1 - t2);
+
+	auto delta_periods = delta_time/period;
+
+	return (unsigned int) round(delta_periods);
+}
+
 }

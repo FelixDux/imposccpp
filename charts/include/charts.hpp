@@ -4,10 +4,13 @@
 #include "impact.hpp"
 
 #include <vector>
+#include <string>
 
 namespace charts
 {
 	void plot_impacts(const std::vector<dynamics::Impact> &impacts);
+
+	std::string classify_orbit(const std::vector<dynamics::Impact> &impacts);
 }
 
 #endif

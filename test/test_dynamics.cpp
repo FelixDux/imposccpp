@@ -65,6 +65,24 @@ TEST_CASE( "Phase converter converts consistently in both directions", "[phase]"
 
 }
 
+TEST_CASE( "Phase converter returns correct number of periods between times", "[phase]" ) {
+	std::vector<unsigned int> ints = {1, 2, 4, 5, 16};
+
+	PhaseConverter converter( 4.89 );
+
+	REQUIRE(converter.is_valid());
+
+	double start_time = 0.02;
+
+	for (auto i : ints)
+	{
+		double new_time = start_time + i*converter.get_period();
+
+		REQUIRE(i == converter.difference_in_periods(start_time, new_time));
+	}
+
+}
+
 TEST_CASE( "Phase converter runs forward to specified phase correctly", "[phase]" ) {
 	std::vector<unsigned int> ints = {1, 2, 4, 5, 16};
 	PhaseConverter converter(2.76) ;

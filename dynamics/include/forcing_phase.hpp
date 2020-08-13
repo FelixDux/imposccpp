@@ -41,6 +41,8 @@ namespace dynamics
 			// Get next time corresponding to a phase
 			Time forward_to_phase(Time time, Phase phase) const;
 
+			unsigned int difference_in_periods(Time t1, Time t2) const;
+
 		private:
 			Frequency frequency;
 			Time period;
