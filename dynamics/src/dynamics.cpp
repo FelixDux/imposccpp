@@ -12,13 +12,13 @@ ChatterChecker::ChatterChecker(const Parameters &parameters, Velocity velocity_t
 			impact_count(0),
 			sticking(parameters)
 {
-	if (parameters.coefficient_of_restitution < 1 && parameters.coefficient_of_restitution >=0)
+	if (parameters.get_coefficient_of_restitution() < 1 && parameters.get_coefficient_of_restitution() >=0)
 	{ 
 		can_chatter = true;
 		accumulation_time = [parameters] (const Impact &impact) 
 		{
-			return impact.get_time() - 2*impact.get_velocity() / (1-parameters.coefficient_of_restitution) /
-				(cos(impact.get_time() * parameters.forcing_frequency) - parameters.obstacle_offset);
+			return impact.get_time() - 2*impact.get_velocity() / (1-parameters.get_coefficient_of_restitution()) /
+				(cos(impact.get_time() * parameters.get_forcing_frequency()) - parameters.get_obstacle_offset());
 		};
 	}
 	else

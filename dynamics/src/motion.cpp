@@ -10,9 +10,9 @@ MotionAtTime::MotionAtTime(const Parameters &parameters) :
 		params(parameters), impact_time(0),
 		cos_coefficient(0), sin_coefficient(0)
 {
-	if (0 != params.forcing_frequency)
+	if (0 != params.get_forcing_frequency())
 	{
-		gamma = 1.0/(1 - pow(params.forcing_frequency,2));
+		gamma = 1.0/(1 - pow(params.get_forcing_frequency(),2));
 	}
 	else
 	{
@@ -24,12 +24,12 @@ void MotionAtTime::reset_impact(const Impact &impact) const
 {
 	impact_time = impact.get_time();
 
-	cos_coefficient = params.obstacle_offset - gamma * cos(
-			params.forcing_frequency*impact_time);
+	cos_coefficient = params.get_obstacle_offset() - gamma * cos(
+			params.get_forcing_frequency()*impact_time);
 	
-	sin_coefficient = -(params.coefficient_of_restitution * impact.get_velocity()) 
-		+ params.forcing_frequency * gamma * sin(
-				params.forcing_frequency*impact_time); 
+	sin_coefficient = -(params.get_coefficient_of_restitution() * impact.get_velocity()) 
+		+ params.get_forcing_frequency() * gamma * sin(
+				params.get_forcing_frequency()*impact_time); 
 }
 			
 StateOfMotion MotionAtTime::operator() (Time time) const
@@ -42,10 +42,10 @@ StateOfMotion MotionAtTime::operator() (Time time) const
 	return StateOfMotion {.t = time,
 		.x = cos_coefficient * cos_lambda + 
 			sin_coefficient * sin_lambda + 
-			gamma * cos ( time * params.forcing_frequency),
+			gamma * cos ( time * params.get_forcing_frequency()),
 		.v = sin_coefficient * cos_lambda - 
 			cos_coefficient * sin_lambda - 
-			params.forcing_frequency * gamma * sin ( time * params.forcing_frequency) 
+			params.get_forcing_frequency() * gamma * sin ( time * params.get_forcing_frequency()) 
 	};
 }
 			
@@ -55,7 +55,7 @@ MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impa
 
 	trajectory.push_back( {
 			.t = impact.get_time(), 
-			.x = motion.parameters().obstacle_offset, 
+			.x = motion.parameters().get_obstacle_offset(), 
 			.v = impact.get_velocity()});
 	
 	auto release_impact = sticking.check_impact(impact);
@@ -68,7 +68,7 @@ MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impa
 		{
 			trajectory.push_back( {
 				.t = release_impact.impact.get_time(),
-				.x = motion.parameters().obstacle_offset,
+				.x = motion.parameters().get_obstacle_offset(),
 				.v = impact.get_velocity()});
 		}
 	}

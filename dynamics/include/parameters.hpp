@@ -22,7 +22,7 @@ namespace dynamics
 			{
 				std::stringstream str;
 
-				str << "Value " << value << " of parameter " << parameter << " is invalid";
+				str << "ERROR: value " << value << " of " << parameter << " is invalid";
 
 				if (!reason.empty())
 				{
@@ -35,35 +35,48 @@ namespace dynamics
 			ParameterError(const std::string &parameter, double value, const std::string &reason) : std::domain_error(what_message(parameter, value, reason)) {}
 	};
 
-	struct Parameters
+	class Parameters
 	{
-		Frequency forcing_frequency;
-		Scalar coefficient_of_restitution;
-		Displacement obstacle_offset;
+		public:
+			Parameters(Frequency omega, Scalar r, Displacement sigma) : forcing_frequency(omega), coefficient_of_restitution(r), obstacle_offset(sigma)
+			{
+				validate();
+			};
 
-		void validate()
-		{
-			if (forcing_frequency == 0)
+			Frequency get_forcing_frequency() const {return forcing_frequency;}
+			Scalar get_coefficient_of_restitution() const {return coefficient_of_restitution;}
+			Displacement get_obstacle_offset() const {return obstacle_offset;}
+
+		private:
+
+			void validate()
 			{
-				throw ParameterError("forcing frequency", forcing_frequency, "the model cannot cope with constant (non-periodic) forcing");
-			}
-			if (forcing_frequency < 0)
-			{
-				throw ParameterError("forcing frequency", forcing_frequency, "the model cannot cope with negative forcing frequencies");
-			}
-			if (forcing_frequency == 1)
-			{
-				throw ParameterError("forcing frequency", forcing_frequency, "this is a resonant case with unbounded solutions");
-			}
-			if (coefficient_of_restitution > 1)
-			{
-				throw ParameterError("coefficient of restitution", coefficient_of_restitution, "values > 1 generate unbounded solutions");
-			}
-			if (coefficient_of_restitution < 0)
-			{
-				throw ParameterError("coefficient of restitution", coefficient_of_restitution, "negative values generate unphysical solutions");
-			}
-		};
+				if (forcing_frequency == 0)
+				{
+					throw ParameterError("forcing frequency", forcing_frequency, "the model cannot cope with constant (non-periodic) forcing");
+				}
+				if (forcing_frequency < 0)
+				{
+					throw ParameterError("forcing frequency", forcing_frequency, "the model cannot cope with negative forcing frequencies");
+				}
+				if (forcing_frequency == 1)
+				{
+					throw ParameterError("forcing frequency", forcing_frequency, "this is a resonant case with unbounded solutions");
+				}
+				if (coefficient_of_restitution > 1)
+				{
+					throw ParameterError("coefficient of restitution", coefficient_of_restitution, "values > 1 generate unbounded solutions");
+				}
+				if (coefficient_of_restitution < 0)
+				{
+					throw ParameterError("coefficient of restitution", coefficient_of_restitution, "negative values generate unphysical solutions");
+				}
+			};
+
+			Frequency forcing_frequency;
+			Scalar coefficient_of_restitution;
+			Displacement obstacle_offset;
+
 	};
 }
 
