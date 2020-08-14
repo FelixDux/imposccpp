@@ -9,6 +9,6 @@ namespace charts
 
 	void plot_impacts(const std::vector<Impact> &impacts)
 	{ 
-		do_plot( {prepare_scatter_plot(impacts, "impact map")}, "scatter.png");
+		do_plot( {prepare_plot(impacts, "impact map", "dots")}, "scatter.png");
 	}
 }

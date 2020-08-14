@@ -47,7 +47,7 @@ namespace charts
 
 		std::stringstream result_str;
 
-		for (; rit != impacts.crend() && found; ++rit)
+		for (++rit; rit != impacts.crend() && !found; ++rit)
 		{
 			if (0 == rit->get_velocity())
 			{
@@ -56,8 +56,10 @@ namespace charts
 
 			if (rit->almost_equal(comparator))
 			{
-				found = true;
 				num_periods = converter.difference_in_periods(comparator.get_time(), rit->get_time());
+				found = (num_periods > 0);
+
+				//if (0==num_periods) std::cout << num_periods << " between " << comparator.get_time() << " and " << rit->get_time() << std::endl;
 			}
 			else
 			{
@@ -69,7 +71,7 @@ namespace charts
 		{
 			if (chatter)
 			{
-				result_str << "(∞," << num_periods << ")";
+				result_str << "chatter"; //"(∞," << num_periods << ")";
 			}
 			else
 			{
@@ -179,7 +181,7 @@ namespace charts
 
 		for (const auto &orbit : doa_data)
 		{
-			commands.push_back(prepare_scatter_plot(orbit.second, orbit.first));
+			commands.push_back(prepare_plot(orbit.second, orbit.first, "boxes fs solid"));
 
 			std::cout << orbit.first << std::endl;
 		}
