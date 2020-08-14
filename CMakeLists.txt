@@ -12,6 +12,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Specify the executable
 add_executable (imposc main.cpp)
 
+# Enable the thread library
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(imposc PRIVATE Threads::Threads)
+
 # dynamics
 add_subdirectory (dynamics)
 target_link_libraries (imposc PUBLIC dynamics)

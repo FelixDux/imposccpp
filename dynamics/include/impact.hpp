@@ -42,7 +42,17 @@ namespace dynamics
 			{
 				const float tolerance = 0.001;
 
-				return (fabs(v - other.v) < tolerance && fabs(phi - other.phi));
+				// Compare phases
+				if (fabs(phi - other.phi) >= tolerance)
+				{
+					// Account for periodicity (i.e. 0 and 1 are the same)
+					if (fabs(1 + phi - other.phi) >= tolerance)
+					{
+						return false;
+					}
+				}
+
+				return (fabs(v - other.v) < tolerance);
 			}
 		private:
 			Phase phi;

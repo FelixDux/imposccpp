@@ -2,6 +2,7 @@
 
 #include "parameters.hpp"
 #include "forcing_phase.hpp"
+#include "impact.hpp"
 
 #include <cmath>
 #include <vector>
@@ -222,3 +223,19 @@ TEST_CASE( "Phase converter runs forward to specified phase correctly", "[phase]
 	}
 
 }
+
+TEST_CASE( "Test for near equality of impacts works correctly ", "[impact]") {
+	PhaseConverter converter(2);
+
+	Impact impact1(converter, 0, 1);
+	Impact impact2(converter, 0.0001, 1.0001);
+	Impact impact3(converter, 0.3, 0.2);
+	Impact impact4(converter, 0.99999*converter.get_period(), 1);
+
+	REQUIRE(impact1.almost_equal(impact2));
+
+	REQUIRE(!impact3.almost_equal(impact2));
+
+	REQUIRE(impact1.almost_equal(impact4));
+}
+
