@@ -111,7 +111,7 @@ namespace charts
 
 				result[classification.first].push_back(classification.second);
 
-				v += delta_v;
+				v -= delta_v;
 			}
 
 			phi += delta_phi;
