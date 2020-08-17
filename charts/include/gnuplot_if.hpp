@@ -18,7 +18,7 @@ namespace charts
 {
 	std::string gnuplot_prefix(const std::string &outfile)
 	{
-		return "gnuplot -e \"set terminal png size 400,300; set output '" + outfile + "'; set key outside; ";
+		return "gnuplot -e \"set terminal png size 400,300; set output '" + outfile + "'; set key below box; set yrange [0:]; set xrange [0 : 1]; set xtics ('0' 0, '{/Symbol p}/{/Symbol w}' 0.5, '2{/Symbol p}/{/Symbol w}' 1) ; set xlabel '{/Symbol f}'; set ylabel 'v'; ";
 	};
 
 	std::string prepare_plot(const std::vector<dynamics::Impact> &impacts, const std::string &title, const std::string &marker)
