@@ -21,20 +21,27 @@ namespace charts
 		return "gnuplot -e \"set terminal png size 400,300; set output '" + outfile + "'; set key below box; set yrange [0:]; set xrange [0 : 1]; set xtics ('0' 0, '{/Symbol p}/{/Symbol w}' 0.5, '2{/Symbol p}/{/Symbol w}' 1) ; set xlabel '{/Symbol f}'; set ylabel 'v'; ";
 	};
 
+	std::pair<std::ofstream, std::string> temp_file_stream()
+	{
+		char tmpname[] = "tmp.XXXXXX";
+		auto fd = mkstemp(tmpname);
+		return {std::ofstream(tmpname), std::string(tmpname)};
+	}
+
 	std::string prepare_plot(const std::vector<dynamics::Impact> &impacts, const std::string &title, const std::string &marker)
 	{
-		std::string data_file = tmpnam(nullptr);
+		auto outpair = temp_file_stream();
 
-		{
-			std::ofstream outfile(data_file); 
-			
-			for_each(impacts.begin(), impacts.end(), 
-					[&outfile] (const dynamics::Impact& impact)
-					{ outfile << impact.get_phase() 
-					<< "\t" << impact.get_velocity()
-					<< std::endl;}
-					);
-		}
+		std::ofstream &outfile = outpair.first;
+
+		std::string &data_file = outpair.second;
+		
+		for_each(impacts.begin(), impacts.end(), 
+				[&outfile] (const dynamics::Impact& impact)
+				{ outfile << impact.get_phase() 
+				<< "\t" << impact.get_velocity()
+				<< std::endl;}
+				);
 		
 		return " '" + data_file + "' title '" + title + "' with " + marker;
 	}
