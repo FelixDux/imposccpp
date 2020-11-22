@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 
 		// charts::plot_impacts(map.iterate(0.5, 2.0, 4000));
 		// charts::plot_impacts(map.singularity_set(1000)) ;
-		charts::plot_doa(parameters, 4, 200, 400, 1000);
+		charts::plot_doa(parameters, 4, 200, 400, 500);
 	}
 	catch (const dynamics::ParameterError &e)
 	{
