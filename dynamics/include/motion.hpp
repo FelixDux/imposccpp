@@ -71,7 +71,7 @@ namespace dynamics
 					offset(parameters.get_obstacle_offset()),
 					motion(parameters) {};
 
-			std::vector<StateOfMotion> to_next_impact(const Impact &impact) const;
+			std::vector<StateOfMotion> to_next_impact(const Impact &impact);
 
 			bool is_valid() const {return sticking.is_valid() && motion.is_valid();}
 
@@ -79,7 +79,7 @@ namespace dynamics
 
 		private:
 
-			MotionBetweenImpacts &initialise_motion(const Impact &impact) const;
+			MotionBetweenImpacts &initialise_motion(const Impact &impact);
 
 			MotionAtTime motion;
 			Sticking sticking;

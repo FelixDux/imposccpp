@@ -49,7 +49,7 @@ StateOfMotion MotionAtTime::operator() (Time time) const
 	};
 }
 			
-MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impact) const
+MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impact)
 {
 	trajectory.clear();
 
@@ -72,9 +72,11 @@ MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impa
 				.v = impact.get_velocity()});
 		}
 	}
+
+	return *this;
 }
 
-vector<StateOfMotion> MotionBetweenImpacts::to_next_impact(const Impact &impact) const
+vector<StateOfMotion> MotionBetweenImpacts::to_next_impact(const Impact &impact)
 {
 	initialise_motion(impact);
 

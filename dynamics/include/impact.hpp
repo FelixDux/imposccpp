@@ -45,7 +45,7 @@ namespace dynamics
 				if (fabs(phi - other.phi) >= phase_tolerance)
 				{
 					// Account for periodicity (i.e. 0 and 1 are the same)
-					if (fabs(1 + phi - other.phi) >= phase_tolerance)
+					if (fabs(phi - other.phi) >= 1 - phase_tolerance)
 					{
 						return false;
 					}

@@ -54,12 +54,12 @@ namespace dynamics
 			ImpactMap(const Parameters &parameters):motion(parameters),chatter_checker(parameters) {}
 
 			// Apply the map to an impact
-			Impact apply(const Impact &impact) const;
+			Impact apply(const Impact &impact);
 
 			// Iterate the map 
-			std::vector<Impact> iterate(const Impact &impact, unsigned int num_iterations) const;
+			std::vector<Impact> iterate(const Impact &impact, unsigned int num_iterations);
 			// Convenient overload
-			std::vector<Impact> iterate(Phase phi, Velocity v, unsigned int num_iterations) const
+			std::vector<Impact> iterate(Phase phi, Velocity v, unsigned int num_iterations)
 			{
 				auto t = motion.converter().time_into_cycle(phi);
 				Impact impact(motion.converter(), t, v);
@@ -67,7 +67,7 @@ namespace dynamics
 			};
 
 			// Generate a singularity set
-			std::vector<Impact> singularity_set(unsigned int num_points) const;
+			std::vector<Impact> singularity_set(unsigned int num_points);
 
 			// Accessors
 			bool is_valid() const {return motion.is_valid();}

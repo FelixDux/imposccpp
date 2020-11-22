@@ -27,7 +27,7 @@ namespace charts
 		}
 
 		delta_phi = 1.0 / num_phi;
-		delta_v = 1.0 / num_v;
+		delta_v = max_v / num_v;
 	}
 
 	std::string DOAClassifier::classify_orbit( const PhaseConverter &converter, const std::vector<Impact> &impacts) const
@@ -125,12 +125,16 @@ namespace charts
 	{
 		std::map< std::string, std::vector< Impact > > result;
 
+		// #if !defined(NDEBUG)
+		// unsigned int num_tasks = 1;
+		// #else
 		auto num_tasks = std::thread::hardware_concurrency();
 
 		if (num_tasks <= 0)
 		{
 			num_tasks = 1;
 		}
+		// #endif
 
 		std::vector< std::future < std::map <std::string, std::list<Impact> > > >  tasks(num_tasks);
 
@@ -181,7 +185,7 @@ namespace charts
 
 		for (const auto &orbit : doa_data)
 		{
-			commands.push_back(prepare_plot(orbit.second, orbit.first, "boxes fs solid"));
+			commands.push_back(prepare_plot(orbit.second, orbit.first, "dots"));
 
 			std::cout << orbit.first << std::endl;
 		}

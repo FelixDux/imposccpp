@@ -48,7 +48,7 @@ ChatterChecker::ChatterResult ChatterChecker::operator() (const Impact &impact) 
 }
 
 // Apply the map to an impact
-Impact ImpactMap::apply(const Impact &impact) const
+Impact ImpactMap::apply(const Impact &impact)
 {
 	vector<StateOfMotion> trajectory = motion.to_next_impact(impact);
 
@@ -58,7 +58,7 @@ Impact ImpactMap::apply(const Impact &impact) const
 }
 
 // Iterate the map 
-vector<Impact> ImpactMap::iterate(const Impact &impact, unsigned int num_iterations) const
+vector<Impact> ImpactMap::iterate(const Impact &impact, unsigned int num_iterations)
 {
 	list<Impact> trajectory;
 
@@ -85,7 +85,7 @@ vector<Impact> ImpactMap::iterate(const Impact &impact, unsigned int num_iterati
 }
 
 // Generate a singularity set
-std::vector<Impact> ImpactMap::singularity_set(unsigned int num_points) const
+std::vector<Impact> ImpactMap::singularity_set(unsigned int num_points)
 {
 	list<Impact> trajectory;
 
