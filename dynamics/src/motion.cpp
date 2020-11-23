@@ -49,7 +49,7 @@ StateOfMotion MotionAtTime::operator() (Time time) const
 	};
 }
 			
-MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impact) const
+MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impact)
 {
 	trajectory.clear();
 
@@ -72,17 +72,23 @@ MotionBetweenImpacts &MotionBetweenImpacts::initialise_motion(const Impact &impa
 				.v = impact.get_velocity()});
 		}
 	}
+
+	return *this;
 }
 
-vector<StateOfMotion> MotionBetweenImpacts::to_next_impact(const Impact &impact) const
+NextImpactResult MotionBetweenImpacts::to_next_impact(const Impact &impact)
 {
+	NextImpactResult result;
+
+	result.found_impact = true;
+
 	initialise_motion(impact);
 
 	auto step_size = search.initial_step_size;
 
 	auto current_time = trajectory.back().t;
 
-	while (fabs(step_size) > search.minimum_step_size)
+	while (fabs(step_size) > search.minimum_step_size && result.found_impact)
 	{
 		current_time += step_size;
 
@@ -112,12 +118,16 @@ vector<StateOfMotion> MotionBetweenImpacts::to_next_impact(const Impact &impact)
 			trajectory.push_back(current_state);
 			step_size = 0;
 		}
+
+		if (motion.long_excursion(current_time))
+		{
+			result.found_impact = false;
+		}
 	}
 
 	// We've grown the trajectory as a list but return it as a vector
-	vector<StateOfMotion> result;
-	result.reserve(trajectory.size());
-	copy(begin(trajectory), end(trajectory), back_inserter(result));
+	result.motion.reserve(trajectory.size());
+	copy(begin(trajectory), end(trajectory), back_inserter(result.motion));
 	return result;
 }
 }

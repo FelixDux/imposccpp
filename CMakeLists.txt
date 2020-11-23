@@ -6,11 +6,16 @@ cmake_minimum_required(VERSION 3.10)
 project(imposc VERSION 1.0.0)
 
 # specify the C++ standard
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Specify the executable
 add_executable (imposc main.cpp)
+
+# Enable the thread library
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(imposc PRIVATE Threads::Threads)
 
 # dynamics
 add_subdirectory (dynamics)

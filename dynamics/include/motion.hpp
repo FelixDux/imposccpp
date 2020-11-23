@@ -39,6 +39,8 @@ namespace dynamics
 
 			StateOfMotion operator() (Time time) const;
 
+			bool long_excursion(Time time) const {return time-impact_time > params.get_maximum_periods();}
+
 			bool is_valid() const {return params.get_forcing_frequency() != 0;}
 
 			const Parameters &parameters() const {return params;}
@@ -57,6 +59,13 @@ namespace dynamics
 		Time minimum_step_size;
 	};
 
+	struct NextImpactResult
+	{
+		std::vector<StateOfMotion> motion;
+
+		bool found_impact;
+	};
+
 	class MotionBetweenImpacts
 	{
 		/*
@@ -71,7 +80,7 @@ namespace dynamics
 					offset(parameters.get_obstacle_offset()),
 					motion(parameters) {};
 
-			std::vector<StateOfMotion> to_next_impact(const Impact &impact) const;
+			NextImpactResult to_next_impact(const Impact &impact);
 
 			bool is_valid() const {return sticking.is_valid() && motion.is_valid();}
 
@@ -79,7 +88,7 @@ namespace dynamics
 
 		private:
 
-			MotionBetweenImpacts &initialise_motion(const Impact &impact) const;
+			MotionBetweenImpacts &initialise_motion(const Impact &impact);
 
 			MotionAtTime motion;
 			Sticking sticking;

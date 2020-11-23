@@ -19,6 +19,7 @@
 #include "types.hpp"
 #include "forcing_phase.hpp"
 #include <math.h>
+#include <algorithm>
 
 namespace dynamics
 {
@@ -38,11 +39,26 @@ namespace dynamics
 			Time get_time() const {return t;}
 			Velocity get_velocity() const {return v;}
 
-			bool almost_equal(const Impact &other) const
+			bool almost_equal(const Impact &other, Phase phase_tolerance=0.001, Velocity v_tolerance=0.001) const
 			{
-				const float tolerance = 0.001;
+				// Compare phases
+				if (fabs(phi - other.phi) >= phase_tolerance)
+				{
+					// Account for periodicity (i.e. 0 and 1 are the same)
+					if (fabs(phi - other.phi) >= 1 - phase_tolerance)
+					{
+						return false;
+					}
+				}
 
-				return (fabs(v - other.v) < tolerance && fabs(phi - other.phi));
+				Velocity max_v = std::max(v, other.v);
+
+				if (max_v==0)
+				{
+					max_v = 1;
+				}
+
+				return (fabs((v - other.v)/max_v) < v_tolerance);
 			}
 		private:
 			Phase phi;

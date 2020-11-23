@@ -38,7 +38,8 @@ namespace dynamics
 	class Parameters
 	{
 		public:
-			Parameters(Frequency omega, Scalar r, Displacement sigma) : forcing_frequency(omega), coefficient_of_restitution(r), obstacle_offset(sigma)
+			Parameters(Frequency omega, Scalar r, Displacement sigma, unsigned int N=100) : forcing_frequency(omega), coefficient_of_restitution(r), obstacle_offset(sigma),
+																							maximum_periods(N)
 			{
 				validate();
 			};
@@ -46,6 +47,7 @@ namespace dynamics
 			Frequency get_forcing_frequency() const {return forcing_frequency;}
 			Scalar get_coefficient_of_restitution() const {return coefficient_of_restitution;}
 			Displacement get_obstacle_offset() const {return obstacle_offset;}
+			unsigned int get_maximum_periods() const {return maximum_periods;}
 
 		private:
 
@@ -71,12 +73,16 @@ namespace dynamics
 				{
 					throw ParameterError("coefficient of restitution", coefficient_of_restitution, "negative values generate unphysical solutions");
 				}
+				if (maximum_periods==0)
+				{
+					throw ParameterError("maximum forcing periods to detect impact", maximum_periods, "must be > 0");
+				}
 			};
 
 			Frequency forcing_frequency;
 			Scalar coefficient_of_restitution;
 			Displacement obstacle_offset;
-
+			unsigned int maximum_periods;
 	};
 }
 
