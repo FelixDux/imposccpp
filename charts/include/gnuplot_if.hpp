@@ -2,15 +2,17 @@
 #define IMPOSC_CHARTS_GNUPLOT_IF_HPP
 
 #include <stdlib.h>
+#include <string.h>
 #include <cstdio>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <algorithm>
 #include <vector>
-
-
 #include <iostream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 #include "impact.hpp"
 
@@ -23,7 +25,12 @@ namespace charts
 
 	std::pair<std::ofstream, std::string> temp_file_stream()
 	{
-		char tmpname[] = "tmp.XXXXXX";
+		auto tmp_path = fs::temp_directory_path() / "tmp.XXXXXX";
+
+		char tmpname[1 + strlen(tmp_path.c_str())] = "";
+
+		sprintf(tmpname, "%s", tmp_path.c_str());
+
 		auto fd = mkstemp(tmpname);
 		return {std::ofstream(tmpname), std::string(tmpname)};
 	}

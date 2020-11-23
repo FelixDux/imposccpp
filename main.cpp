@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	try
 	{
 		//dynamics::Parameters parameters(2, 0.8, -0.01);
-		dynamics::Parameters parameters(5.2, 0.8, 0.43);
+		dynamics::Parameters parameters(5.2, 0.8, -0.63);
 
 		dynamics::ImpactMap map(parameters);
 
