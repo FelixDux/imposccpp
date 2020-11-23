@@ -42,6 +42,21 @@ namespace dynamics
 			mutable unsigned int impact_count;
 	};
 
+	struct IterationResult
+	{
+		std::vector<Impact> impacts;
+
+		bool long_excursions;
+	};
+	
+	struct ImpactResult
+	{
+		Impact impact;
+
+		bool found_impact;
+	};
+	
+
 	class ImpactMap
 	{
 		/*
@@ -54,12 +69,12 @@ namespace dynamics
 			ImpactMap(const Parameters &parameters):motion(parameters),chatter_checker(parameters) {}
 
 			// Apply the map to an impact
-			Impact apply(const Impact &impact);
+			ImpactResult apply(const Impact &impact);
 
 			// Iterate the map 
-			std::vector<Impact> iterate(const Impact &impact, unsigned int num_iterations);
+			IterationResult iterate(const Impact &impact, unsigned int num_iterations);
 			// Convenient overload
-			std::vector<Impact> iterate(Phase phi, Velocity v, unsigned int num_iterations)
+			IterationResult iterate(Phase phi, Velocity v, unsigned int num_iterations)
 			{
 				auto t = motion.converter().time_into_cycle(phi);
 				Impact impact(motion.converter(), t, v);

@@ -48,25 +48,36 @@ ChatterChecker::ChatterResult ChatterChecker::operator() (const Impact &impact) 
 }
 
 // Apply the map to an impact
-Impact ImpactMap::apply(const Impact &impact)
+ImpactResult ImpactMap::apply(const Impact &impact)
 {
-	vector<StateOfMotion> trajectory = motion.to_next_impact(impact);
+	NextImpactResult trajectory = motion.to_next_impact(impact);
 
-	auto state_at_impact = trajectory.back();
+	auto state_at_impact = trajectory.motion.back();
 
-	return Impact(motion.converter(), state_at_impact.t, state_at_impact.v);
+	return {Impact(motion.converter(), state_at_impact.t, state_at_impact.v), trajectory.found_impact};
 }
 
 // Iterate the map 
-vector<Impact> ImpactMap::iterate(const Impact &impact, unsigned int num_iterations)
+IterationResult ImpactMap::iterate(const Impact &impact, unsigned int num_iterations)
 {
+	IterationResult result;
+
+	result.long_excursions = false;
+
 	list<Impact> trajectory;
 
 	trajectory.push_back(impact);
 
 	for (unsigned int i=0; i < num_iterations; i++)
 	{
-		trajectory.push_back(apply(trajectory.back()));
+		auto next_impact = apply(trajectory.back());
+
+		trajectory.push_back(next_impact.impact);
+
+		if (!next_impact.found_impact)
+		{
+			result.long_excursions = true;
+		}
 
 		// Now check for chatter
 		auto chatter_result = chatter_checker(trajectory.back());
@@ -78,9 +89,8 @@ vector<Impact> ImpactMap::iterate(const Impact &impact, unsigned int num_iterati
 	}
 
 	// We've grown the trajectory as a list but return it as a vector
-	vector<Impact> result;
-	result.reserve(trajectory.size());
-	copy(begin(trajectory), end(trajectory), back_inserter(result));
+	result.impacts.reserve(trajectory.size());
+	copy(begin(trajectory), end(trajectory), back_inserter(result.impacts));
 	return result;
 }
 
@@ -95,7 +105,12 @@ std::vector<Impact> ImpactMap::singularity_set(unsigned int num_points)
 
 	for (int i=0; i < num_points; i++)
 	{
-		trajectory.push_back(apply(Impact(motion.converter(), starting_time, 0)));
+		auto impact_result = apply(Impact(motion.converter(), starting_time, 0));
+
+		if (impact_result.found_impact)
+		{
+			trajectory.push_back(impact_result.impact);
+		}
 
 		starting_time += delta_time;
 	}

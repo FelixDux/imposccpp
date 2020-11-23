@@ -30,10 +30,10 @@ namespace charts
 		delta_v = max_v / num_v;
 	}
 
-	std::string DOAClassifier::classify_orbit( const PhaseConverter &converter, const std::vector<Impact> &impacts) const
+	std::string DOAClassifier::classify_orbit( const PhaseConverter &converter, const IterationResult &impacts) const
 	{ 
 
-		auto rit = impacts.crbegin();
+		auto rit = impacts.impacts.crbegin();
 
 		const Impact &comparator = *rit;
 
@@ -47,40 +47,47 @@ namespace charts
 
 		std::stringstream result_str;
 
-		for (++rit; rit != impacts.crend() && !found; ++rit)
+		if (impacts.long_excursions)
 		{
-			if (0 == rit->get_velocity())
-			{
-				chatter = true;
-			}
-
-			if (rit->almost_equal(comparator))
-			{
-				num_periods = converter.difference_in_periods(comparator.get_time(), rit->get_time());
-				found = (num_periods > 0);
-
-				//if (0==num_periods) std::cout << num_periods << " between " << comparator.get_time() << " and " << rit->get_time() << std::endl;
-			}
-			else
-			{
-				num_impacts++;
-			}
-		}
-
-		if (found)
-		{
-			if (chatter)
-			{
-				result_str << "chatter"; //"(∞," << num_periods << ")";
-			}
-			else
-			{
-				result_str << "(" << num_impacts << "," << num_periods << ")";
-			}
+			result_str << "long excursions";
 		}
 		else
-		{
-			result_str << "(∞,∞)";
+		{			
+			for (++rit; rit != impacts.impacts.crend() && !found; ++rit)
+			{
+				if (0 == rit->get_velocity())
+				{
+					chatter = true;
+				}
+
+				if (rit->almost_equal(comparator))
+				{
+					num_periods = converter.difference_in_periods(comparator.get_time(), rit->get_time());
+					found = (num_periods > 0);
+
+					//if (0==num_periods) std::cout << num_periods << " between " << comparator.get_time() << " and " << rit->get_time() << std::endl;
+				}
+				else
+				{
+					num_impacts++;
+				}
+			}
+
+			if (found)
+			{
+				if (chatter)
+				{
+					result_str << "chatter"; //"(∞," << num_periods << ")";
+				}
+				else
+				{
+					result_str << "(" << num_impacts << "," << num_periods << ")";
+				}
+			}
+			else
+			{
+				result_str << "(∞,∞)";
+			}
 		}
 
 		return result_str.str();
@@ -92,7 +99,7 @@ namespace charts
 
 		auto impacts = impact_map.iterate(phi, v, num_iterations);
 
-		return std::pair<std::string, Impact>(classify_orbit(impact_map.converter(), impacts), impacts.front());
+		return std::pair<std::string, Impact>(classify_orbit(impact_map.converter(), impacts), impacts.impacts.front());
 	}
 
 	std::map<std::string, std::list<Impact> > DOAClassifier::classify_for_phase_range(unsigned int n_start_phi, unsigned int n_end_phi)

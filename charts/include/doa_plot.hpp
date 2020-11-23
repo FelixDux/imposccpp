@@ -47,7 +47,7 @@ namespace charts
 
 		private:
 
-			std::string classify_orbit(const dynamics::PhaseConverter &converter, const std::vector<dynamics::Impact> &impacts) const;
+			std::string classify_orbit(const dynamics::PhaseConverter &converter, const dynamics::IterationResult &impacts) const;
 
 			std::pair<std::string, dynamics::Impact> classify_from_impact(dynamics::Phase phi, dynamics::Velocity v) const;
 
