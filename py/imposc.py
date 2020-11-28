@@ -33,6 +33,7 @@ class ImposcActions:
 def do_and_show(image_file):
     if image_file.exists():
         Image.open(image_file).show()
+        
 
 if __name__ == "__main__":
     import argparse
@@ -46,9 +47,9 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--phi", type=float, help="The initial phase", default=0.5)
     parser.add_argument("-v", "--v", type=float, help="The initial velocity", default=0.0)
     parser.add_argument("-m", "--max-velocity", type=float, help="The initial velocity", default=0.0)
-    parser.add_argument("-i", "--num-impacts", default=1000, type=int, help="The number of impacts")
-    parser.add_argument("--n-v-increments", default=400, type=int, help="The number of v increments for a doa plot")
-    parser.add_argument("--n-phi-increments", default=400, type=int, help="The number of phase increments for a doa plot")
+    parser.add_argument("-i", "--num-impacts", default=4000, type=int, help="The number of impacts")
+    parser.add_argument("--n-v-increments", default=100, type=int, help="The number of v increments for a doa plot")
+    parser.add_argument("--n-phi-increments", default=100, type=int, help="The number of phase increments for a doa plot")
 
     args = parser.parse_args()
 
@@ -58,7 +59,7 @@ if __name__ == "__main__":
         do_and_show(actions.impacts(args.omega, args.r, args.sigma, args.max_periods, args.phi, args.v, args.num_impacts))
 
     if args.plot == "singularity-set":
-        do_and_show(actions.singularity_set(args.omega, args.r, args.sigma, args.max_periods, args.num_iterations))
+        do_and_show(actions.singularity_set(args.omega, args.r, args.sigma, args.max_periods, args.num_impacts))
 
     if args.plot == "doa":
         do_and_show(actions.doa(args.omega, args.r, args.sigma, args.max_periods, args.max_velocity, args.n_v_increments, args.n_phi_increments))

@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["--plot", "scatter", "--omega", "5.2", "--r", "0.8", "--sigma", "0"]
+            "args": ["--plot", "scatter", "--omega", "4.85", "--r", "0.8", "--sigma", "0.01"]
         },
         {
             "name": "g++ - Build and debug active file",
