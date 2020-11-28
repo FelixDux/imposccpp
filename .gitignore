@@ -4,4 +4,6 @@ TODO.txt
 addfiles.bash
 addlib.bash
 
+**/.venv/
+
 build/

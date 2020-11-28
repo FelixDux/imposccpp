@@ -7,8 +7,8 @@ using namespace dynamics;
 namespace charts
 {
 
-	void plot_impacts(const std::vector<Impact> &impacts)
+	void plot_impacts(const std::vector<Impact> &impacts, const std::string &outfile)
 	{ 
-		do_plot( {prepare_plot(impacts, "impact map", "dots")}, "scatter.png");
+		do_plot( {prepare_plot(impacts, "impact map", "dots")}, outfile);
 	}
 }

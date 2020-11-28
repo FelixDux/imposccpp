@@ -60,6 +60,7 @@
         "shared_mutex": "cpp",
         "sstream": "cpp",
         "stdexcept": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "codecvt": "cpp"
     }
 }

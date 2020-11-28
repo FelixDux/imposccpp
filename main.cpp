@@ -1,26 +1,10 @@
-#include "dynamics.hpp"
-#include "charts.hpp"
-#include "doa_plot.hpp"
+#include "imposcpy.hpp"
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
-	try
-	{
-		//dynamics::Parameters parameters(2, 0.8, -0.01);
-		dynamics::Parameters parameters(5.2, 0.8, -0.63);
-
-		dynamics::ImpactMap map(parameters);
-
-		// charts::plot_impacts(map.iterate(0.5, 2.0, 4000));
-		// charts::plot_impacts(map.singularity_set(1000)) ;
-		charts::plot_doa(parameters, 4, 200, 400, 500);
-	}
-	catch (const dynamics::ParameterError &e)
-	{
-		std::cerr << e.what() << std::endl;
-	}
+	map_impacts(5.2, 0.8, -0.63, 100, 0.5, 2, 4000, "impact-map.png");
 
 	return 0;
 }

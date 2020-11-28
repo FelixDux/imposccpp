@@ -1,8 +1,9 @@
 include_directories ( ${IMPOSC_SOURCE_DIR}/test/catch
 	${IMPOSC_SOURCE_DIR}/charts/include
 	${IMPOSC_SOURCE_DIR}/dynamics/include
+	${IMPOSC_SOURCE_DIR}/imposcpy/include
                      )
 add_executable (Test test.cpp test_dynamics.cpp)
 target_include_directories (Test PUBLIC catch/)
-target_link_libraries (Test dynamics charts)
+target_link_libraries (Test dynamics charts imposcpy)
 add_test (NAME MyTest COMMAND Test)

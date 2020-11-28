@@ -18,12 +18,12 @@ namespace fs = std::filesystem;
 
 namespace charts
 {
-	std::string gnuplot_prefix(const std::string &outfile)
+	inline std::string gnuplot_prefix(const std::string &outfile)
 	{
 		return "gnuplot -e \"set terminal png size 400,300; set output '" + outfile + "'; set key below box; set yrange [0:]; set xrange [0 : 1]; set xtics ('0' 0, '{/Symbol p}/{/Symbol w}' 0.5, '2{/Symbol p}/{/Symbol w}' 1) ; set xlabel '{/Symbol f}'; set ylabel 'v'; ";
 	};
 
-	std::pair<std::ofstream, std::string> temp_file_stream()
+	inline std::pair<std::ofstream, std::string> temp_file_stream()
 	{
 		auto tmp_path = fs::temp_directory_path() / "tmp.XXXXXX";
 
@@ -35,7 +35,7 @@ namespace charts
 		return {std::ofstream(tmpname), std::string(tmpname)};
 	}
 
-	std::string prepare_plot(const std::vector<dynamics::Impact> &impacts, const std::string &title, const std::string &marker)
+	inline std::string prepare_plot(const std::vector<dynamics::Impact> &impacts, const std::string &title, const std::string &marker)
 	{
 		auto outpair = temp_file_stream();
 
@@ -54,7 +54,7 @@ namespace charts
 	}
 
 
-	int do_plot(const std::vector<std::string> &commands, const std::string &outfile)
+	inline int do_plot(const std::vector<std::string> &commands, const std::string &outfile)
 	{
 		std::stringstream command;
 		command << gnuplot_prefix(outfile);

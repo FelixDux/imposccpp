@@ -12,7 +12,8 @@
 
 namespace charts
 {
-	void plot_doa(const dynamics::Parameters &parameters, dynamics::Velocity max_velocity, unsigned int n_v_increments, unsigned int n_phi_increments, unsigned int n_iterations);
+	void plot_doa(const dynamics::Parameters &parameters, dynamics::Velocity max_velocity, unsigned int n_v_increments, 
+		unsigned int n_phi_increments, unsigned int n_iterations, const std::string &outfile);
 
 	class DOAClassifier
 	{
