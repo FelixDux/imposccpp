@@ -1,67 +1,82 @@
-from image_cache import ImageCache
-from imposclib import ImposcIF
+from imposc_actions import ImposcActions
+import io
 from pathlib import Path
-from PIL import Image
+from inspect import signature, Parameter
+from flask import Flask, request, make_response, send_file, render_template
+from markupsafe import Markup
 
-class ImposcActions:
+app = Flask(__name__)
 
-    def __init__(self):
-        self._cache = ImageCache()
-        self._imposclib = ImposcIF(self._cache.cache_path)
+def image_content_type(outfile: Path) -> str:
+    return f"image/{outfile.suffix[1:]}"
 
-    def impacts(self, omega: float, r: float, sigma: float, max_periods: int, phi: float, v: float, num_iterations: int):
-        outfile = self._cache.offer_new_file()
-        if self._imposclib.impacts(omega, r, sigma, max_periods, phi, v, num_iterations, outfile):
-            return outfile
+def marshall_arguments(action_function, args: dict):
+    outcome = []
+    result = dict()
+
+    sig = signature(action_function)
+
+    for name, parameter in sig.parameters.items():
+        if name not in args:
+            # Not supplied - is there a default value?
+            if parameter.default == Parameter.empty:
+                outcome.append(f"Parameter {name} was not supplied")
+
         else:
-            return Path()
+            # Check type
+            try:
+                if str(parameter.annotation) == "<class 'float'>":
+                    result[name] = float(args[name])
+                elif str(parameter.annotation) == "<class 'int'>":
+                    result[name] = int(args[name])
+                else:
+                    result[name] = args[name]
+            except ValueError:
+                outcome.append(f"Parameter {name} was supplied with an invalid values {args[name]}")
 
-    def singularity_set(self, omega: float, r: float, sigma: float, max_periods: int, num_points: int):
-        outfile = self._cache.offer_new_file()
-        if self._imposclib.singularity_set(omega, r, sigma, max_periods, num_points, outfile):
-            return outfile
-        else:
-            return Path()
+    return result, outcome
 
-    def doa(self, omega: float, r: float, sigma: float, max_periods: int, max_velocity: float, n_v_increments: int, n_phi_increments: int):
-        outfile = self._cache.offer_new_file()
-        if self._imposclib.doa(omega, r, sigma, max_periods, max_velocity, n_v_increments, n_phi_increments, outfile):
-            return outfile
-        else:
-            return Path()
+@app.route('/')
+def index():
+    return 'Impact Oscillator'
 
-def do_and_show(image_file):
-    if image_file.exists():
-        Image.open(image_file).show()
-        
-
-if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Impact oscillator plots')
-    parser.add_argument("-p", "--plot", help="Type of plot", choices=['scatter', 'singularity-set', 'doa'], required=True)
-    parser.add_argument("-o", "--omega", type=float, help="The forcing frequency", required=True)
-    parser.add_argument("-r", "--r", type=float, help="The coefficient of restitution", required=True)
-    parser.add_argument("-s", "--sigma", type=float, help="The obstacle offset", required=True)
-    parser.add_argument("-n", "--max-periods", default=100, type=int, help="The number of forcing cycles before the simulator will assume that an impact will not succeed")
-    parser.add_argument("-f", "--phi", type=float, help="The initial phase", default=0.5)
-    parser.add_argument("-v", "--v", type=float, help="The initial velocity", default=0.0)
-    parser.add_argument("-m", "--max-velocity", type=float, help="The initial velocity", default=0.0)
-    parser.add_argument("-i", "--num-impacts", default=4000, type=int, help="The number of impacts")
-    parser.add_argument("--n-v-increments", default=100, type=int, help="The number of v increments for a doa plot")
-    parser.add_argument("--n-phi-increments", default=100, type=int, help="The number of phase increments for a doa plot")
-
-    args = parser.parse_args()
-
+@app.route('/<action>', methods=['POST', 'GET'])
+def do_action(action):
+    # Get method for action
     actions = ImposcActions()
 
-    if args.plot == "scatter":
-        do_and_show(actions.impacts(args.omega, args.r, args.sigma, args.max_periods, args.phi, args.v, args.num_impacts))
+    action_function = getattr(actions, action, None)
 
-    if args.plot == "singularity-set":
-        do_and_show(actions.singularity_set(args.omega, args.r, args.sigma, args.max_periods, args.num_impacts))
+    if action_function:
 
-    if args.plot == "doa":
-        do_and_show(actions.doa(args.omega, args.r, args.sigma, args.max_periods, args.max_velocity, args.n_v_increments, args.n_phi_increments))
+        # Get arguments from request
+        if request.method == "POST":
+            args = request.form
 
+        elif request.method == "GET":
+            args = request.args
 
+        else:
+            return make_response(render_template("error.html", message=f"No arguments supplied for {action}"), 422)
+
+        # Marshall arguments
+        marshalled_args, outcome = marshall_arguments(action_function, args)
+
+        if outcome:
+            message = Markup(f"<ul><li>{'<li>'.join(outcome)}</ul>")
+            
+            return make_response(render_template("error.html", message=message), 422)
+        else:
+            # Pass to function
+            outfile: Path = action_function(**marshalled_args)
+
+            # Return bytestream
+            with outfile.open(mode = "rb") as image:
+                return send_file(
+                            io.BytesIO(image.read()),
+                            attachment_filename=f"{outfile}",
+                            mimetype = image_content_type(outfile)
+                    )
+
+    else:
+        return make_response(render_template("error.html", message=f"Unknown endpoint {action}"), 404)
