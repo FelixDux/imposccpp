@@ -3,11 +3,12 @@ from imposclib import ImposcIF
 from pathlib import Path
 from PIL import Image
 
+
 class ImposcActions:
 
     def __init__(self):
         self._cache = ImageCache()
-        self._imposclib = ImposcIF(self._cache.cache_path)
+        self._imposclib = ImposcIF()
 
     def impacts(self, omega: float, r: float, sigma: float, phi: float, v: float, max_periods: int=100, num_iterations: int=1000) -> Path:
         outfile = self._cache.offer_new_file()
