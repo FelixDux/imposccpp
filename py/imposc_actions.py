@@ -39,7 +39,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description='Impact oscillator plots')
-    parser.add_argument("-p", "--plot", help="Type of plot", choices=['scatter', 'singularity-set', 'doa'], required=True)
+    parser.add_argument("-p", "--plot", help="Type of plot", choices=['impacts', 'singularity-set', 'doa'], required=True)
     parser.add_argument("-o", "--omega", type=float, help="The forcing frequency", required=True)
     parser.add_argument("-r", "--r", type=float, help="The coefficient of restitution", required=True)
     parser.add_argument("-s", "--sigma", type=float, help="The obstacle offset", required=True)
@@ -55,8 +55,8 @@ if __name__ == "__main__":
 
     actions = ImposcActions()
 
-    if args.plot == "scatter":
-        do_and_show(actions.impacts(args.omega, args.r, args.sigma, args.max_periods, args.phi, args.v, args.num_impacts))
+    if args.plot == "impacts":
+        do_and_show(actions.impacts(args.omega, args.r, args.sigma, args.phi, args.v, args.max_periods, args.num_impacts))
 
     if args.plot == "singularity-set":
         do_and_show(actions.singularity_set(args.omega, args.r, args.sigma, args.max_periods, args.num_impacts))

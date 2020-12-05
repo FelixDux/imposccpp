@@ -3,6 +3,8 @@
 TODO.txt
 addfiles.bash
 addlib.bash
+*.pyc
+__pycache__
 
 **/.venv/
 

@@ -36,7 +36,10 @@ class ImposcIF:
         return wrap_string(str(self.images / outfile))
 
     def impacts(self, omega: float, r: float, sigma: float, max_periods: int, phi: float, v: float, num_iterations: int, outfile: str) -> bool:
-        return self._functions["map_impacts"](ctypes.c_double(omega), ctypes.c_double(r), ctypes.c_double(sigma), ctypes.c_uint(max_periods),
+        return self._functions["map_impacts"](ctypes.c_double(omega), 
+            ctypes.c_double(r), 
+            ctypes.c_double(sigma), 
+            ctypes.c_uint(max_periods),
                 ctypes.c_double(phi), ctypes.c_double(v), ctypes.c_uint(num_iterations), self.image_file(outfile))
 
     def singularity_set(self, omega: float, r: float, sigma: float, max_periods: int, num_points: int, outfile: str) -> bool:

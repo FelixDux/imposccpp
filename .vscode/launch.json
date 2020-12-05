@@ -28,7 +28,7 @@
             "console": "integratedTerminal",
             "args": [
                 "--plot",
-                "scatter",
+                "impacts",
                 "--omega",
                 "4.85",
                 "--r",
