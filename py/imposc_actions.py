@@ -10,26 +10,27 @@ class ImposcActions:
         self._cache = ImageCache()
         self._imposclib = ImposcIF()
 
-    def impacts(self, omega: float, r: float, sigma: float, phi: float, v: float, max_periods: int=100, num_iterations: int=1000) -> Path:
+    def impacts(self, **kwargs) -> Path:
         outfile = self._cache.offer_new_file()
-        if self._imposclib.impacts(omega, r, sigma, max_periods, phi, v, num_iterations, outfile):
+        if self._imposclib.impacts(outfile=outfile, **kwargs):
             return outfile
         else:
             return Path()
 
-    def singularity_set(self, omega: float, r: float, sigma: float, max_periods: int=100, num_points: int=1000) -> Path:
+    def singularity_set(self, **kwargs) -> Path:
         outfile = self._cache.offer_new_file()
-        if self._imposclib.singularity_set(omega, r, sigma, max_periods, num_points, outfile):
+        if self._imposclib.singularity_set(outfile=outfile, **kwargs):
             return outfile
         else:
             return Path()
 
-    def doa(self, omega: float, r: float, sigma: float, max_periods: int=100, max_velocity: float=4, n_v_increments: int=200, n_phi_increments: int=200) -> Path:
+    def doa(self, **kwargs) -> Path:
         outfile = self._cache.offer_new_file()
-        if self._imposclib.doa(omega, r, sigma, max_periods, max_velocity, n_v_increments, n_phi_increments, outfile):
+        if self._imposclib.doa(outfile=outfile, **kwargs):
             return outfile
         else:
             return Path()
+            
 
 def do_and_show(image_file):
     if image_file.exists():
@@ -52,17 +53,16 @@ if __name__ == "__main__":
     parser.add_argument("--n-v-increments", default=100, type=int, help="The number of v increments for a doa plot")
     parser.add_argument("--n-phi-increments", default=100, type=int, help="The number of phase increments for a doa plot")
 
-    args = parser.parse_args()
+    args = vars(parser.parse_args())
 
     actions = ImposcActions()
 
-    if args.plot == "impacts":
-        do_and_show(actions.impacts(args.omega, args.r, args.sigma, args.phi, args.v, args.max_periods, args.num_impacts))
+    if args.pop('plot') == "impacts":
+        do_and_show(actions.impacts(**args))
 
-    if args.plot == "singularity-set":
-        do_and_show(actions.singularity_set(args.omega, args.r, args.sigma, args.max_periods, args.num_impacts))
+    if args.pop('plot') == "singularity-set":
+        do_and_show(actions.singularity_set(**args))
 
-    if args.plot == "doa":
-        do_and_show(actions.doa(args.omega, args.r, args.sigma, args.max_periods, args.max_velocity, args.n_v_increments, args.n_phi_increments))
-
+    if args.pop('plot') == "doa":
+        do_and_show(actions.doa(**args))
 
