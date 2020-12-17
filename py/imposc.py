@@ -17,11 +17,12 @@ def marshall_arguments(action_function, args: dict):
     sig = signature(action_function)
 
     for name, parameter in sig.parameters.items():
-        if name not in args:
+        if name == "kwargs":
+            result.update(args)
+        elif name not in args:
             # Not supplied - is there a default value?
             if parameter.default == Parameter.empty:
                 outcome.append(f"Parameter {name} was not supplied")
-
         else:
             # Check type
             try:
@@ -70,13 +71,21 @@ def do_action(action):
             # Pass to function
             outfile: Path = action_function(**marshalled_args)
 
-            # Return bytestream
-            with outfile.open(mode = "rb") as image:
-                return send_file(
-                            io.BytesIO(image.read()),
-                            attachment_filename=f"{outfile}",
-                            mimetype = image_content_type(outfile)
-                    )
+            if outfile.suffix == ".txt":
+                # There was an error
+                message = ""
 
+                if outfile.exists():
+                    message = outfile.read_text()
+
+                return make_response(render_template("error.html", message=message), 422)
+            else:
+                # Return bytestream
+                with outfile.open(mode = "rb") as image:
+                    return send_file(
+                                io.BytesIO(image.read()),
+                                attachment_filename=f"{outfile}",
+                                mimetype = image_content_type(outfile)
+                        )
     else:
         return make_response(render_template("error.html", message=f"Unknown endpoint {action}"), 404)

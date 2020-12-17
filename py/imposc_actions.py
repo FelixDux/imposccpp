@@ -2,6 +2,7 @@ from image_cache import ImageCache
 from imposclib import ImposcIF
 from pathlib import Path
 from PIL import Image
+from lib_errors import LibErrors
 
 
 class ImposcActions:
@@ -11,30 +12,36 @@ class ImposcActions:
         self._imposclib = ImposcIF()
 
     def impacts(self, **kwargs) -> Path:
+        errors = LibErrors()
         outfile = self._cache.offer_new_file()
-        if self._imposclib.impacts(outfile=outfile, **kwargs):
+        if self._imposclib.impacts(outfile=outfile, errorfile=errors.errorFile, **kwargs):
             return outfile
         else:
-            return Path()
+            return errors.errorPath
 
     def singularity_set(self, **kwargs) -> Path:
+        errors = LibErrors()
         outfile = self._cache.offer_new_file()
-        if self._imposclib.singularity_set(outfile=outfile, **kwargs):
+        if self._imposclib.singularity_set(outfile=outfile, errorfile=errors.errorFile, **kwargs):
             return outfile
         else:
-            return Path()
+            return errors.errorPath
 
     def doa(self, **kwargs) -> Path:
+        errors = LibErrors()
         outfile = self._cache.offer_new_file()
-        if self._imposclib.doa(outfile=outfile, **kwargs):
+        if self._imposclib.doa(outfile=outfile, errorfile=errors.errorFile, **kwargs):
             return outfile
         else:
-            return Path()
+            return errors.errorPath
             
 
 def do_and_show(image_file):
     if image_file.exists():
-        Image.open(image_file).show()
+        if image_file.suffix == ".txt":
+            print(image_file.read_text())
+        else:
+            Image.open(image_file).show()
         
 
 if __name__ == "__main__":
@@ -60,9 +67,9 @@ if __name__ == "__main__":
     if args.pop('plot') == "impacts":
         do_and_show(actions.impacts(**args))
 
-    if args.pop('plot') == "singularity-set":
+    elif args.pop('plot') == "singularity-set":
         do_and_show(actions.singularity_set(**args))
 
-    if args.pop('plot') == "doa":
+    elif args.pop('plot') == "doa":
         do_and_show(actions.doa(**args))
 

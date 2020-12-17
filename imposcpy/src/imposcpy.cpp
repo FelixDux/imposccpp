@@ -8,8 +8,10 @@ using namespace dynamics;
 using namespace charts;
 
 bool map_impacts(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
- Phase phi, Velocity v, unsigned int num_iterations, const char* outfile)
+ Phase phi, Velocity v, unsigned int num_iterations, const char* outfile, const char* logfile)
 {
+	ErrorLogger logger(logfile);
+
 	try
 	{
         Parameters parameters(omega, r, sigma, max_periods);
@@ -20,6 +22,8 @@ bool map_impacts(Frequency omega, Scalar r, Displacement sigma, unsigned int max
 	}
 	catch (const dynamics::ParameterError &e)
 	{
+		logger.log(e.what());
+
 		return false;
 	}
 
@@ -27,8 +31,10 @@ bool map_impacts(Frequency omega, Scalar r, Displacement sigma, unsigned int max
 }
 
 bool map_singularity_set(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
- unsigned int num_points, const char* outfile)
+ unsigned int num_points, const char* outfile, const char* logfile)
 {
+	ErrorLogger logger(logfile);
+	
 	try
 	{
         Parameters parameters(omega, r, sigma, max_periods);
@@ -39,6 +45,8 @@ bool map_singularity_set(Frequency omega, Scalar r, Displacement sigma, unsigned
 	}
 	catch (const dynamics::ParameterError &e)
 	{
+		logger.log(e.what());
+		
 		return false;
 	}
 
@@ -47,8 +55,10 @@ bool map_singularity_set(Frequency omega, Scalar r, Displacement sigma, unsigned
 
 bool map_doa(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
  Velocity max_velocity, unsigned int n_v_increments, unsigned int n_phi_increments, 
- unsigned int n_iterations, const char* outfile)
+ unsigned int n_iterations, const char* outfile, const char* logfile)
 {
+	ErrorLogger logger(logfile);
+	
 	try
 	{
         Parameters parameters(omega, r, sigma, max_periods);
@@ -57,6 +67,8 @@ bool map_doa(Frequency omega, Scalar r, Displacement sigma, unsigned int max_per
 	}
 	catch (const dynamics::ParameterError &e)
 	{
+		logger.log(e.what());
+		
 		return false;
 	}
 

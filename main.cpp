@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv)
 {
-	map_impacts(5.2, 0.8, -0.63, 100, 0.5, 2, 4000, "impact-map.png");
+	map_impacts(5.2, 0.8, -0.63, 100, 0.5, 2, 4000, "impact-map.png", "errors.txt");
 
 	return 0;
 }

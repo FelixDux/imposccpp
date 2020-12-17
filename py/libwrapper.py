@@ -10,17 +10,14 @@ def wrap_string(s: str):
 def wrap_path(path: pathlib.Path):
     return wrap_string(str(path))
 
-def wrap_var(var, type_name: str):
-    pass
-
 
 class LibWrapper:
     _converters = dict([
-        ("bool", (ctypes.c_bool, ctypes.c_bool)),
-        ("float", (ctypes.c_float, ctypes.c_float)),
-        ("double", (ctypes.c_double, ctypes.c_double)),
-        ("int", (ctypes.c_int, ctypes.c_int)),
-        ("uint", (ctypes.c_uint, ctypes.c_uint)),
+        ("bool", (lambda x: ctypes.c_bool(bool(x)), ctypes.c_bool)),
+        ("float", (lambda x: ctypes.c_float(float(x)), ctypes.c_float)),
+        ("double", (lambda x: ctypes.c_double(float(x)), ctypes.c_double)),
+        ("int", (lambda x: ctypes.c_int(int(x)), ctypes.c_int)),
+        ("uint", (lambda x: ctypes.c_uint(int(x)), ctypes.c_uint)),
         ("Path", (wrap_path, ctypes.POINTER(ctypes.c_char))),
         ("str", (wrap_string, ctypes.POINTER(ctypes.c_char)))
     ])
