@@ -7,6 +7,9 @@ from markupsafe import Markup
 
 app = Flask(__name__)
 
+# TODO: look here https://stackoverflow.com/questions/11994325/how-to-divide-flask-app-into-multiple-py-files
+
+
 def image_content_type(outfile: Path) -> str:
     return f"image/{outfile.suffix[1:]}"
 
