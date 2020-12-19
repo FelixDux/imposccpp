@@ -187,7 +187,7 @@ namespace charts
 		return result;
 	}
 
-	void plot_doa(const Parameters &parameters, Velocity max_velocity, unsigned int n_v_increments, unsigned int n_phi_increments, unsigned int n_iterations)
+	void plot_doa(const Parameters &parameters, Velocity max_velocity, unsigned int n_v_increments, unsigned int n_phi_increments, unsigned int n_iterations, const std::string &outfile)
 	{
 		DOAClassifier classifier(parameters, max_velocity, n_v_increments, n_phi_increments, n_iterations);
 
@@ -202,7 +202,7 @@ namespace charts
 			std::cout << orbit.first << std::endl;
 		}
 
-		do_plot(commands, "doa.png");
+		do_plot(commands, outfile);
 
 	}
 }

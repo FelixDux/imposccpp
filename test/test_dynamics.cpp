@@ -10,7 +10,7 @@
 
 using namespace dynamics;
 
-SCENARIO( "Parameters class raises exception when incorrectly initalised ", "[parameters]") {
+SCENARIO( "Parameters class raises exception when incorrectly initialised ", "[parameters]") {
 	Frequency good_frequency = 2.8;
 	Scalar good_r = 0.8;
 	Displacement good_offset = 0;

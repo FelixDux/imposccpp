@@ -9,6 +9,9 @@ project(imposc VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Make libraries shared
+set(BUILD_SHARED_LIBS True)
+
 # Specify the executable
 add_executable (imposc main.cpp)
 
@@ -19,11 +22,15 @@ target_link_libraries(imposc PRIVATE Threads::Threads)
 
 # dynamics
 add_subdirectory (dynamics)
-target_link_libraries (imposc PUBLIC dynamics)
+# target_link_libraries (imposc PUBLIC dynamics)
 
 # charts
 add_subdirectory (charts)
-target_link_libraries (imposc PUBLIC charts)
+# target_link_libraries (imposc PUBLIC charts)
+
+# Library for Python binding
+add_subdirectory (imposcpy)
+target_link_libraries (imposc PUBLIC imposcpy)
 
 # Testing
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/catch)

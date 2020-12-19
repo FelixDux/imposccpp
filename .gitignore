@@ -3,5 +3,11 @@
 TODO.txt
 addfiles.bash
 addlib.bash
+*.pyc
+__pycache__
+
+**/.venv/
 
 build/
+errors/
+errorfile.txt

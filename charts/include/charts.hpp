@@ -8,7 +8,7 @@
 
 namespace charts
 {
-	void plot_impacts(const std::vector<dynamics::Impact> &impacts);
+	void plot_impacts(const std::vector<dynamics::Impact> &impacts, const std::string &outfile);
 }
 
 #endif
