@@ -5,7 +5,7 @@ from libwrapper import LibWrapper, wrap_path
 class ImposcIF(LibWrapper):
 
     def __init__(self):
-        super().__init__(pathlib.Path(__file__).parent.parent.absolute() / "build/imposcpy/libimposcpy.so")
+        super().__init__(pathlib.Path(__file__).parent.parent.absolute() / "imposc-cpp/build/imposcpy/libimposcpy.so")
 
         self.add_function("map_impacts", "bool", 
             [("omega", "double"), ("r", "double"), ("sigma", "double"), ("max_periods", "uint"), ("phi", "double"), ("v", "double"), ("num_impacts", "uint"), ("outfile", "Path"), ("errorfile", "Path")]
