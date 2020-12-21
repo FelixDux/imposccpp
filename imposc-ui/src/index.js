@@ -4,10 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-var element = React.createElement('h1', { className: 'greeting' }, 'Hello, world!'); // <React.StrictMode><App /></React.StrictMode>;
+function Plot(props) {
+  return (
+    <img src={props.url} />
+  );
+}
+
+var element = React.createElement('h1', { className: 'greeting' }, 'Impact Oscillator'); // <React.StrictMode><App /></React.StrictMode>;
 
 ReactDOM.render(
-  element,
+  // element,
+  <Plot
+  url = 'http://127.0.0.1:5000/impacts?omega=4.85&sigma=0.01&r=0.8&phi=0.2&v=0.01&max_periods=100&num_impacts=5000'
+  />,
   document.getElementById('root')
 );
 
