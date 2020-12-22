@@ -4,8 +4,12 @@ from pathlib import Path
 from inspect import signature, Parameter
 from flask import Flask, request, make_response, send_file, render_template
 from markupsafe import Markup
+from flask_cors import CORS
+import logging
 
 app = Flask(__name__)
+CORS(app, resources=r'/*')
+logging.getLogger('flask_cors').level = logging.DEBUG
 
 # TODO: look here https://stackoverflow.com/questions/11994325/how-to-divide-flask-app-into-multiple-py-files
 
@@ -54,7 +58,10 @@ def do_action(action):
     if action_function:
 
         # Get arguments from request
-        if request.method == "POST":
+        if request.is_json:
+            args = request.get_json()
+            
+        elif request.method == "POST":
             args = request.form
 
         elif request.method == "GET":
