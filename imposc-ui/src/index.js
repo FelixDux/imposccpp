@@ -4,11 +4,114 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-function Plot(props) {
-  return (
-    <img src={props.url} />
-  );
-}
+class PlotterForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      blob: null,
+      src: "",
+      args: {omega: 5.2, sigma: 0.0, r: 0.8, phi: 0.2, v: 0.01, max_periods: 100, num_impacts: 5000}
+    };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleInputChange(event) {    
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+    let args = this.state.args
+    args[name] = value;
+    this.setState({ args: args });
+  }
+
+  handleSubmit(event) {
+    fetch(this.props.url,
+      {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+                    'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(this.state.args)
+      })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      this.setState( {blob: blob, src: URL.createObjectURL(blob), result: "Done"});
+    })
+    .catch(error => {
+      console.error('There has been a problem with your fetch operation:', error);
+      this.setState({result: error.toString()});
+    });
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <div>
+      <form onSubmit={this.handleSubmit}>
+      <label>Omega: <input 
+        name="omega"
+        type="number"
+        value={this.state.args.omega}
+        onChange={this.handleInputChange} />
+      </label>
+      <label>Sigma: <input 
+        name="sigma"
+        type="number"
+        value={this.state.args.sigma}
+        onChange={this.handleInputChange}
+        />
+      </label>
+      <label>r: <input 
+        name="r"
+        type="number"
+        value={this.state.args.r}
+        onChange={this.handleInputChange}
+        />
+      </label>
+      <label>phi: <input 
+        name="phi"
+        type="number"
+        value={this.state.args.phi}
+        onChange={this.handleInputChange}
+        />
+      </label>
+      <label>v: <input 
+        name="v"
+        type="number"
+        value={this.state.args.v}
+        onChange={this.handleInputChange}
+        />
+      </label>
+      <label>max_periods: <input 
+        name="max_periods"
+        type="number"
+        value={this.state.args.max_periods}
+        onChange={this.handleInputChange}
+        />
+      </label>
+      <label>num_impacts: <input 
+        name="num_impacts"
+        type="number"
+        value={this.state.args.num_impacts}
+        onChange={this.handleInputChange}
+        />
+      </label>
+      <input type="submit" value="Update" />
+      </form>
+      <div><img src={this.state.src} alt="" /></div>
+      </div>
+    )
+  }
+
+};
 
 class Plotter extends React.Component {
   constructor(props) {
@@ -52,15 +155,12 @@ class Plotter extends React.Component {
   }
 };
 
-var element = React.createElement('h1', { className: 'greeting' }, 'Impact Oscillator'); // <React.StrictMode><App /></React.StrictMode>;
-
 ReactDOM.render(
-  // element,
-  <Plotter
+  <PlotterForm 
   url = 'http://127.0.0.1:5000/impacts'
-  args = {{
-    omega: 5.2, sigma: 0.0, r: 0.8, phi: 0.2, v: 0.01, max_periods: 100, num_impacts: 5000,
-  }}
+  // args = {{
+  //   omega: 5.2, sigma: 0.0, r: 0.8, phi: 0.2, v: 0.01, max_periods: 100, num_impacts: 5000,
+  // }}
   />,
   document.getElementById('root')
 );
@@ -70,9 +170,6 @@ ReactDOM.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-// TODO: comms to imposc service
-// TODO: display imposc response
-// TODO: form element to send imposc request
 // TODO: arrange SPA with form and display elements
 // TODO: make imposc service address and port number configurable
 // TODO: Make imposc service self-documenting via JSON (actions, descriptions, variable lists, with descriptions - try to follow same structure as Elixir project)

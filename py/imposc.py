@@ -10,6 +10,8 @@ import logging
 app = Flask(__name__)
 CORS(app, resources=r'/*')
 logging.getLogger('flask_cors').level = logging.DEBUG
+logger = logging.getLogger('Impact oscillator service')
+logger.level = logging.DEBUG
 
 # TODO: look here https://stackoverflow.com/questions/11994325/how-to-divide-flask-app-into-multiple-py-files
 
@@ -52,26 +54,36 @@ def index():
 def do_action(action):
     # Get method for action
     actions = ImposcActions()
+    
+    logger.log(level=logging.DEBUG, msg=f"Action: {action}")
 
     action_function = getattr(actions, action, None)
 
     if action_function:
 
-        # Get arguments from request
-        if request.is_json:
-            args = request.get_json()
-            
-        elif request.method == "POST":
-            args = request.form
+        try:
+            # Get arguments from request
+            if request.is_json:
+                args = request.get_json()
+                
+            elif request.method == "POST":
+                args = request.form
 
-        elif request.method == "GET":
-            args = request.args
+            elif request.method == "GET":
+                args = request.args
 
-        else:
-            return make_response(render_template("error.html", message=f"No arguments supplied for {action}"), 422)
+            else:
+                return make_response(render_template("error.html", message=f"No arguments supplied for {action}"), 422)
+
+        except Exception as e:
+            return make_response(render_template("error.html", message=f"{e}"), 400)
+
+        logger.log(level=logging.DEBUG, msg=f"Args: {args}")
 
         # Marshall arguments
         marshalled_args, outcome = marshall_arguments(action_function, args)
+
+        logger.log(level=logging.DEBUG, msg=f"Marshalled: {marshalled_args}")
 
         if outcome:
             message = Markup(f"<ul><li>{'<li>'.join(outcome)}</ul>")
