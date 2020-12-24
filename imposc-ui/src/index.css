@@ -11,3 +11,41 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+input[type=number] {
+  width: 25%;
+  text-align: center;
+}
+
+input[type=submit] {
+  text-align: center;
+}
+
+table.inputGroup {
+  border: none;
+}
+
+th.inputGroup {
+  border: none;
+  text-align: center;
+}
+
+td.inputGroup {
+  border: none;
+  text-align: left;
+}
+
+table.spaLayout {
+  border: none;
+  align-content: center;
+}
+
+td.spaInputs {
+  border: none;
+  vertical-align: top;
+  width: 25%;
+}
+
+td.spaImage {
+  border: none;
+}

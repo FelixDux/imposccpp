@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 class PlotterInput extends React.Component {
   constructor(props) {
     super(props);
-  }
+  };
 
   render() {
     const step = this.props.type === 'integer' ? 1 : 0.01;
@@ -40,8 +40,10 @@ class PlotterInput extends React.Component {
     }
 
     return (
-      <label>
-        {this.props.label}: <input 
+      // <label>
+        <tr>
+        <td className = "inputGroup" >{this.props.label}</td>
+        <td className = "inputGroup" ><input 
           name={this.props.name}
           type="number"
           value={this.props.value}
@@ -49,19 +51,60 @@ class PlotterInput extends React.Component {
           step = {step}
           min = {min}
           max = {max}
-        />
-      </label>
+        /></td></tr>
+      // </label>
     )
   }
-}
+};
+
+class PlotterInputGroup extends React.Component {
+  constructor(props) {
+    super(props);
+  };
+
+  render() {
+    const inputs = this.props.inputs.map(
+      (record) =>
+      {
+        return (
+          <PlotterInput 
+            name = {record.name}
+            label = {record.label}
+            value = {record.value}
+            range = {record.range}
+            type = {record.type}
+            onChange={this.props.onChange}
+          />
+        );
+      }
+    )
+
+    return (
+      <table className = "inputGroup" >
+        <tr className = "inputGroup" >
+          <th className = "inputGroup" span="2">{this.props.groupName}</th>
+          {inputs}
+        </tr>
+      </table>
+    )
+  }
+};
 
 class PlotterForm extends React.Component {
   constructor(props) {
     super(props);
+    
+    let args = {};
+    Object.entries(props.groups).forEach(([groupName,group]) => {
+      for (let record of group) {
+        args[record.name] = record.value;
+      }
+    });
+
     this.state = {
       blob: null,
       src: "",
-      args: {omega: 5.2, sigma: 0.0, r: 0.8, phi: 0.2, v: 0.01, max_periods: 100, num_impacts: 5000}
+      args: args,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -72,7 +115,7 @@ class PlotterForm extends React.Component {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
-    let args = this.state.args
+    let args = this.state.args;
     args[name] = value;
     this.setState({ args: args });
   }
@@ -106,7 +149,7 @@ class PlotterForm extends React.Component {
   renderInput(name, label, value, range, type)
   {
     return (
-      <PlotterInput 
+      <PlotterInput
         name = {name}
         label = {label}
         value = {value}
@@ -118,28 +161,59 @@ class PlotterForm extends React.Component {
   }
 
   render() {
+    
+    const groups = Object.entries(this.props.groups).map(([groupName,group]) => {
+      return (
+        <PlotterInputGroup 
+          name = {groupName}
+          inputs = {group}
+          onChange={this.handleInputChange}
+        />
+      );
+    });
+
     return (
       <div>
+        <table className = "spaLayout" >
+          <tr>
+          <td className = "spaInputs" >
       <form onSubmit={this.handleSubmit}>
-      {this.renderInput('omega', 'Forcing frequency', this.state.args.omega, 'positive')}
-      {this.renderInput('sigma', 'Obstacle offset', this.state.args.sigma)}
-      {this.renderInput('r', 'Coefficient of restitution', this.state.args.r, 'non-negative')}
-      {this.renderInput('phi', 'Initial phase', this.state.args.phi, 'circle')}
-      {this.renderInput('v', 'Initial velocity', this.state.args.v, 'non-negative')}
-      {this.renderInput('max_periods', 'Max forcing periods between impacts', this.state.args.max_periods, 'positive', 'integer')}
-      {this.renderInput('num_impacts', 'Number of impacts to plot', this.state.args.num_impacts, 'positive', 'integer')}
+        {groups}
       <input type="submit" value="Update" />
       </form>
-      <div align="center" ><img src={this.state.src} alt="" width="50%" align="center" /></div>
+      </td>
+      <td className = "spaImage" >
+      <div align="center" ><img src={this.state.src} alt="" width="90%" align="center" /></div>
+      </td>
+      </tr>
+      </table>
       </div>
     )
   }
-
 };
+
+const groups = {
+  Parameters : [
+    {name: 'omega', label: 'Forcing frequency', value: 5.2, range: 'positive', type: 'float'},
+    {name: 'sigma', label: 'Obstacle offset', value: 0, range: '', type: 'float'},
+    {name: 'r', label: 'Coefficient of restitution', value: 0.8, range: 'non-negative', type: 'float'}
+  ],
+  Initial : [
+    {name: 'phi', label: 'Phase', value: 0.5, range: 'circle', type: 'float'},
+    {name: 'v', label: 'Velocity', value: 0, range: 'non-negative', type: 'float'}
+  ],
+  Options : [
+    {name: 'max_periods', label: 'Max forcing periods between impacts', value: 100, range: 'positive', type: 'integer'},
+    {name: 'num_impacts', label: 'Number of impacts to plot', value: 1000, range: 'positive', type: 'integer'}
+  ]
+};
+
+var element = <React.StrictMode><App /></React.StrictMode>;
 
 ReactDOM.render(
   <PlotterForm 
-  url = 'http://127.0.0.1:5000/impacts'
+    url = 'http://127.0.0.1:5000/impacts'
+    groups = {groups}
   />,
   document.getElementById('root')
 );
@@ -151,7 +225,6 @@ reportWebVitals();
 
 // TODO: Make imposc service self-documenting via JSON (actions, descriptions, variable lists, with descriptions - try to follow same structure as Elixir project)
 // TODO: Construct form element from actions JSON
-// TODO: arrange SPA with form and display elements
 // TODO: make imposc service address and port number configurable
 // TODO: don't forget unit tests, docstrings, comments
 // TODO: Dockerise
