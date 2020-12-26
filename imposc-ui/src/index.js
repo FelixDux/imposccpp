@@ -192,20 +192,13 @@ class PlotterForm extends React.Component {
     });
 
     return (
-      <div>
-        <table className = "spaLayout" >
-          <tr>
-          <td className = "spaInputs" >
+      <div className="row">
+        <div className="column">
       <form onSubmit={this.handleSubmit}>
         {groups}
       <input type="submit" value="Show" />
-      </form>
-      </td>
-      <td className = "spaImage" >
-      <div align="center" ><img src={this.state.src} alt="" width="90%" align="center" /></div>
-      </td>
-      </tr>
-      </table>
+      </form></div>      
+      <div className="column right" ><img src={this.state.src} alt="" width="90%" align="center" /></div>
       </div>
     )
   }
@@ -242,10 +235,12 @@ ReactDOM.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
+// TODO: Include navigation bar for plot types
 // TODO: Make imposc service self-documenting via JSON (actions, descriptions, variable lists, with descriptions - try to follow same structure as Elixir project)
 // TODO: Construct form element from actions JSON
 // TODO: make imposc service address and port number configurable
 // TODO: don't forget unit tests, docstrings, comments
+// TODO: tidy up plotting legends etc
 // TODO: Dockerise
 // TODO: Orchestrate with K8s?
 // TODO: Pull Elixir project into same structure
