@@ -15,6 +15,12 @@ code {
 input[type=number] {
   width: 25%;
   text-align: center;
+  border: solid 1px paleturquoise;
+}
+
+input[type=submit] {
+  text-align: center;
+  background-color: paleturquoise;
 }
 
 input[type=submit] {
@@ -23,11 +29,18 @@ input[type=submit] {
 
 table.inputGroup {
   border: none;
+  width: 100%;
+  margin:3px;
+}
+
+table.hidden {
+  display: none;
 }
 
 th.inputGroup {
   border: none;
-  text-align: center;
+  text-align: left;
+  background-color: paleturquoise;
 }
 
 td.inputGroup {
@@ -48,4 +61,39 @@ td.spaInputs {
 
 td.spaImage {
   border: none;
+}
+
+button.toggle {
+  border: none;
+  background-color: paleturquoise;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 150px;
+  background-color: #bbbbcc;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: auto;
+  margin-left: -60px;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

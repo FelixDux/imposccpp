@@ -5,9 +5,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 class PlotterInput extends React.Component {
-  constructor(props) {
-    super(props);
-  };
 
   render() {
     const step = this.props.type === 'integer' ? 1 : 0.01;
@@ -40,19 +37,25 @@ class PlotterInput extends React.Component {
     }
 
     return (
-      // <label>
         <tr>
-        <td className = "inputGroup" >{this.props.label}</td>
-        <td className = "inputGroup" ><input 
-          name={this.props.name}
-          type="number"
-          value={this.props.value}
-          onChange={this.props.onChange}
-          step = {step}
-          min = {min}
-          max = {max}
-        /></td></tr>
-      // </label>
+          <td className = "inputGroup" width="10%"></td>
+          <td className = "inputGroup" >
+            <div class="tooltip">{this.props.label}
+            <span class="tooltiptext">{this.props.tooltip}</span></div>
+            </td>
+          <td className = "inputGroup" >
+            <input 
+            id={this.props.name}
+            name={this.props.name}
+            type="number"
+            defaultValue={this.props.value}
+            onChange={this.props.onChange}
+            step = {step}
+            min = {min}
+            max = {max}
+          />
+          </td>
+        </tr>
     )
   }
 };
@@ -60,31 +63,48 @@ class PlotterInput extends React.Component {
 class PlotterInputGroup extends React.Component {
   constructor(props) {
     super(props);
-  };
+
+    this.handleToggleClick = this.handleToggleClick.bind(this);
+
+    this.state = {isOpen: true};
+  }
+
+  handleToggleClick() {
+    this.setState( {isOpen: !this.state.isOpen});
+  }
 
   render() {
-    const inputs = this.props.inputs.map(
+    const inputs = this.state.isOpen ? this.props.inputs.map(
       (record) =>
       {
         return (
           <PlotterInput 
             name = {record.name}
             label = {record.label}
-            value = {record.value}
+            tooltip = {record.description}
+            value = {this.props.values[record.name]}
             range = {record.range}
             type = {record.type}
             onChange={this.props.onChange}
           />
         );
       }
-    )
+    ) : null;
 
     return (
       <table className = "inputGroup" >
-        <tr className = "inputGroup" >
-          <th className = "inputGroup" span="2">{this.props.groupName}</th>
-          {inputs}
+        <tr>
+          <th className = "inputGroup">{this.props.name} 
+            <button type = "button" className = "toggle" onClick = {this.handleToggleClick}>
+              {this.state.isOpen ? "-" : "+"}
+            </button>
+          </th>
         </tr>
+        <tr className = "inputGroup"><td className = "inputGroup" >
+        <table className = "inputGroup" >
+        {inputs}
+        </table>
+        </td></tr>
       </table>
     )
   }
@@ -118,6 +138,15 @@ class PlotterForm extends React.Component {
     let args = this.state.args;
     args[name] = value;
     this.setState({ args: args });
+    
+    // this.updateFields();
+  }
+
+  updateFields() {
+
+    for (var name of this.state.args) {
+      document.getElementById(name).setAttribute('value', this.state.args[name]);
+    }
   }
 
   handleSubmit(event) {
@@ -146,27 +175,17 @@ class PlotterForm extends React.Component {
     event.preventDefault();
   }
 
-  renderInput(name, label, value, range, type)
-  {
-    return (
-      <PlotterInput
-        name = {name}
-        label = {label}
-        value = {value}
-        range = {range}
-        type = {type}
-        onChange={this.handleInputChange}
-      />
-    )
-  }
-
   render() {
     
     const groups = Object.entries(this.props.groups).map(([groupName,group]) => {
+      const values = Object.assign({}, ...group.map((record) => ({
+        [record.name]: this.state.args[record.name]
+      })));
       return (
         <PlotterInputGroup 
           name = {groupName}
           inputs = {group}
+          values = {values}
           onChange={this.handleInputChange}
         />
       );
@@ -179,7 +198,7 @@ class PlotterForm extends React.Component {
           <td className = "spaInputs" >
       <form onSubmit={this.handleSubmit}>
         {groups}
-      <input type="submit" value="Update" />
+      <input type="submit" value="Show" />
       </form>
       </td>
       <td className = "spaImage" >
@@ -194,21 +213,21 @@ class PlotterForm extends React.Component {
 
 const groups = {
   Parameters : [
-    {name: 'omega', label: 'Forcing frequency', value: 5.2, range: 'positive', type: 'float'},
-    {name: 'sigma', label: 'Obstacle offset', value: 0, range: '', type: 'float'},
-    {name: 'r', label: 'Coefficient of restitution', value: 0.8, range: 'non-negative', type: 'float'}
+    {name: 'omega', description: 'Forcing frequency', value: 5.2, range: 'positive', type: 'float', label: 'ω'},
+    {name: 'sigma', description: 'Obstacle offset', value: 0, range: '', type: 'float', label: 'σ'},
+    {name: 'r', description: 'Coefficient of restitution', value: 0.8, range: 'non-negative', type: 'float', label: 'r'}
   ],
   Initial : [
-    {name: 'phi', label: 'Phase', value: 0.5, range: 'circle', type: 'float'},
-    {name: 'v', label: 'Velocity', value: 0, range: 'non-negative', type: 'float'}
+    {name: 'phi', description: 'Phase (modulo 1)', value: 0.5, range: 'circle', type: 'float', label: 'φ'},
+    {name: 'v', description: 'Velocity', value: 0, range: 'non-negative', type: 'float', label: 'v'}
   ],
   Options : [
-    {name: 'max_periods', label: 'Max forcing periods between impacts', value: 100, range: 'positive', type: 'integer'},
-    {name: 'num_impacts', label: 'Number of impacts to plot', value: 1000, range: 'positive', type: 'integer'}
+    {name: 'max_periods', description: 'Max forcing periods between impacts', value: 100, range: 'positive', type: 'integer', label: 'P'},
+    {name: 'num_impacts', description: 'Number of impacts to plot', value: 1000, range: 'positive', type: 'integer', label: 'N'}
   ]
 };
 
-var element = <React.StrictMode><App /></React.StrictMode>;
+// var element = <React.StrictMode><App /></React.StrictMode>;
 
 ReactDOM.render(
   <PlotterForm 
