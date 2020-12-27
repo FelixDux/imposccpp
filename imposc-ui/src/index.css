@@ -128,8 +128,11 @@ button.toggle {
 
 .column {
   float: left;
-  width: 25%;
-  align: center;
+  width: 20%;
+} 
+
+.column.left {
+  width: 5%;
 } 
 
 .column.right {

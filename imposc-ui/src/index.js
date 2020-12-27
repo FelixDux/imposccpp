@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 class PlotterInput extends React.Component {
 
   render() {
-    const step = this.props.type === 'integer' ? 1 : 0.01;
+    const step = (this.props.type === 'integer' || this.props.type === 'uint') ? 1 : 0.01;
     let min = '';
     let max = '';
 
@@ -193,6 +193,7 @@ class PlotterForm extends React.Component {
 
     return (
       <div className="row">
+        <div className="column left"><p /></div>
         <div className="column">
       <form onSubmit={this.handleSubmit}>
         {groups}
@@ -235,8 +236,8 @@ ReactDOM.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-// TODO: Include navigation bar for plot types
 // TODO: Make imposc service self-documenting via JSON (actions, descriptions, variable lists, with descriptions - try to follow same structure as Elixir project)
+// TODO: Include navigation bar for plot types
 // TODO: Construct form element from actions JSON
 // TODO: make imposc service address and port number configurable
 // TODO: don't forget unit tests, docstrings, comments
