@@ -63,22 +63,24 @@ class ActionCollection:
     def __init__(self):
         self._parameters = ActionParameterCollection()
         self._actions = dict([
-            ('impacts', ["omega", "r", "sigma", "max_periods", "phi", "v", "num_impacts"]),
-            ('singularity_set', ["omega", "r", "sigma", "max_periods", "num_points"]),
-            ('doa', ["omega", "r", "sigma", "max_periods", "max_velocity", "n_v_increments", "n_phi_increments"])
+            ('impacts', (["omega", "r", "sigma", "max_periods", "phi", "v", "num_impacts"], "Scatter plot on the impact surface")),
+            ('singularity_set', (["omega", "r", "sigma", "max_periods", "num_points"], "Plot points on the impact surface which map to zero-velocity impacts")),
+            ('doa', (["omega", "r", "sigma", "max_periods", "max_velocity", "n_v_increments", "n_phi_increments"], "Domain of attraction plot on the impact surface"))
         ])
 
     def add_functions(self, lib: ImposcIF) -> None:
-        for action, names in self._actions.items():
+        for action_name, action in self._actions.items():
+            names = action[0]
             args = self._parameters.args(names)
             args.extend([("outfile", "Path"), ("errorfile", "Path")])
-            lib.add_function(f"map_{action}", "bool", args)
+            lib.add_function(f"map_{action_name}", "bool", args)
 
     def info(self) -> dict:
         result = dict()
 
-        for action, names in self._actions.items():
-            result[action] = self._parameters.action_info(names)
+        for action_name, action in self._actions.items():
+            names = action[0]
+            result[action_name] = self._parameters.action_info(names)
 
         return result
   
@@ -90,6 +92,9 @@ class ImposcActions:
         self._actions = ActionCollection()
         self._imposclib = ImposcIF()
         self._actions.add_functions(self._imposclib)
+
+    def info(self) -> dict:
+        return self._actions.info()
 
     def impacts(self, **kwargs) -> Path:
         errors = LibErrors()

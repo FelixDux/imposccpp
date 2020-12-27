@@ -2,7 +2,7 @@ from imposc_actions import ImposcActions
 import io
 from pathlib import Path
 from inspect import signature, Parameter
-from flask import Flask, request, make_response, send_file, render_template
+from flask import Flask, request, make_response, send_file, render_template, jsonify
 from markupsafe import Markup
 from flask_cors import CORS
 import logging
@@ -12,6 +12,8 @@ CORS(app, resources=r'/*')
 logging.getLogger('flask_cors').level = logging.DEBUG
 logger = logging.getLogger('Impact oscillator service')
 logger.level = logging.DEBUG
+
+actions = ImposcActions()
 
 # TODO: look here https://stackoverflow.com/questions/11994325/how-to-divide-flask-app-into-multiple-py-files
 
@@ -48,12 +50,11 @@ def marshall_arguments(action_function, args: dict):
 
 @app.route('/')
 def index():
-    return 'Impact Oscillator'
+    return jsonify(actions.info())
 
 @app.route('/<action>', methods=['POST', 'GET'])
 def do_action(action):
     # Get method for action
-    actions = ImposcActions()
     
     logger.log(level=logging.DEBUG, msg=f"Action: {action}")
 
