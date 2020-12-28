@@ -213,13 +213,9 @@ class PlotterForm extends React.Component {
 class ActionSelector extends React.Component {
   constructor(props) {
     super(props);
-
-    const label = this.props.action.replace('_',' ');
-
     const activeClass = this.props.active ? 'active' : '';
 
     this.state = {
-      label: label,
       activeClass: activeClass
     };
   }
@@ -227,7 +223,7 @@ class ActionSelector extends React.Component {
   render() {
     return (
       <div class="tooltip">
-      <a id={this.props.action} href={'#'+this.props.action} className={this.state.activeClass} onClick={this.props.onClick}>{this.state.label}</a>
+      <a id={this.props.action} href={'#'+this.props.action} class={this.state.activeClass} onClick={this.props.onClick}>{this.props.label}</a>
       <span class="tooltiptext">{this.props.description}</span>
       </div>
     )
@@ -287,6 +283,7 @@ class PlotterApp extends React.Component {
           action={actionName}
           active={this.state.action == actionName}
           description={actionInfo.description}
+          label={actionInfo.label}
           onClick={this.handleActionChange}
           />
         );
@@ -328,6 +325,7 @@ reportWebVitals();
 // TODO: make imposc service address and port number configurable
 // TODO: don't forget unit tests, docstrings, comments
 // TODO: tidy up plotting legends etc
+// TODO: move to using react-router for navigation
 // TODO: Dockerise
 // TODO: Orchestrate with K8s?
 // TODO: Pull Elixir project into same structure

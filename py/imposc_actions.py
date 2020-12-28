@@ -64,9 +64,9 @@ class ActionCollection:
     def __init__(self):
         self._parameters = ActionParameterCollection()
         self._actions = dict([
-            ('impacts', (["omega", "r", "sigma", "max_periods", "phi", "v", "num_impacts"], "Scatter plot on the impact surface")),
-            ('singularity_set', (["omega", "r", "sigma", "max_periods", "num_points"], "Plot points on the impact surface which map to zero-velocity impacts")),
-            ('doa', (["omega", "r", "sigma", "max_periods", "max_velocity", "n_v_increments", "n_phi_increments"], "Domain of attraction plot on the impact surface"))
+            ('impacts', (["omega", "r", "sigma", "max_periods", "phi", "v", "num_impacts"], "Scatter plot on the impact surface", "Scatter")),
+            ('singularity_set', (["omega", "r", "sigma", "max_periods", "num_points"], "Plot points on the impact surface which map to zero-velocity impacts", "Singularity set")),
+            ('doa', (["omega", "r", "sigma", "max_periods", "max_velocity", "n_v_increments", "n_phi_increments"], "Domain of attraction plot on the impact surface", "DOA plot"))
         ])
 
     def add_functions(self, lib: ImposcIF) -> None:
@@ -81,7 +81,7 @@ class ActionCollection:
 
         for action_name, action in self._actions.items():
             names = action[0]
-            result[action_name] = dict([("description", action[1]), ("groups", self._parameters.action_info(names))])
+            result[action_name] = dict([("description", action[1]), ("label", action[2]), ("groups", self._parameters.action_info(names))])
 
         return result
   
