@@ -34,6 +34,11 @@ class PlotterInput extends React.Component {
         max = 1;
         break;
       }
+      default : {
+        min = '';
+        max = '';
+        break;
+      }
     }
 
     return (
@@ -117,7 +122,7 @@ class PlotterForm extends React.Component {
     let args = {};
     Object.entries(props.groups).forEach(([groupName,group]) => {
       for (let record of group) {
-        args[record.name] = record.value;
+        args[record.name] = record.defaultValue;
       }
     });
 
@@ -199,34 +204,115 @@ class PlotterForm extends React.Component {
         {groups}
       <input type="submit" value="Show" />
       </form></div>      
-      <div className="column right" ><img src={this.state.src} alt="" width="90%" align="center" /></div>
+      <div className="column right" ><img src={this.state.src} alt="" width="80%" align="center" /></div>
       </div>
     )
   }
 };
 
-const groups = {
-  Parameters : [
-    {name: 'omega', description: 'Forcing frequency', value: 5.2, range: 'positive', type: 'float', label: 'ω'},
-    {name: 'sigma', description: 'Obstacle offset', value: 0, range: '', type: 'float', label: 'σ'},
-    {name: 'r', description: 'Coefficient of restitution', value: 0.8, range: 'non-negative', type: 'float', label: 'r'}
-  ],
-  Initial : [
-    {name: 'phi', description: 'Phase (modulo 1)', value: 0.5, range: 'circle', type: 'float', label: 'φ'},
-    {name: 'v', description: 'Velocity', value: 0, range: 'non-negative', type: 'float', label: 'v'}
-  ],
-  Options : [
-    {name: 'max_periods', description: 'Max forcing periods between impacts', value: 100, range: 'positive', type: 'integer', label: 'P'},
-    {name: 'num_impacts', description: 'Number of impacts to plot', value: 1000, range: 'positive', type: 'integer', label: 'N'}
-  ]
+class ActionSelector extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const label = this.props.action.replace('_',' ');
+
+    const activeClass = this.props.active ? 'active' : '';
+
+    this.state = {
+      label: label,
+      activeClass: activeClass
+    };
+  }
+
+  render() {
+    return (
+      <div class="tooltip">
+      <a id={this.props.action} href={'#'+this.props.action} className={this.state.activeClass} onClick={this.props.onClick}>{this.state.label}</a>
+      <span class="tooltiptext">{this.props.description}</span>
+      </div>
+    )
+  }
+}
+
+class PlotterApp extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      action: "",
+      actions: {},
+    };
+
+    this.populate();
+  };
+
+  populate() {
+
+    fetch(this.props.url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response failed');
+      }
+      return response.json();
+    })
+    .then(actions => {
+      this.setState( {actions: actions});
+    })
+    .catch(error => {
+      console.error('Fetch operation failed:', error);
+    });
+
+    this.handleActionChange = this.handleActionChange.bind(this);
+  };
+
+  handleActionChange(event) {
+    const target = event.target;
+
+    const action = target.id;
+
+    this.setState({action: action});
+
+    event.preventDefault();
+  }
+
+  render() {
+
+    const actionUrl = this.props.url + '/' + this.state.action;
+    const actionGroups = this.state.action ? this.state.actions[this.state.action]["groups"] : {};
+
+    const actionLinks = Object.entries(this.state.actions).map(
+      ([actionName, actionInfo]) => {
+        return (
+          <ActionSelector 
+          action={actionName}
+          active={this.state.action == actionName}
+          description={actionInfo.description}
+          onClick={this.handleActionChange}
+          />
+        );
+      }
+    );
+
+    return (
+      <div>
+        <div className="header"><h1>Impact Oscillator</h1></div>
+        <div className="topnav">
+          {actionLinks}
+        </div>
+        <PlotterForm
+        url={actionUrl}
+        groups={actionGroups}
+        />
+      </div>
+    );
+  }
 };
 
 // var element = <React.StrictMode><App /></React.StrictMode>;
 
 ReactDOM.render(
-  <PlotterForm 
-    url = 'http://127.0.0.1:5000/impacts'
-    groups = {groups}
+  <PlotterApp 
+    url = 'http://127.0.0.1:5000'
   />,
   document.getElementById('root')
 );

@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 from lib_errors import LibErrors
 from dataclasses import dataclass, asdict
-from typing import Tuple, List
+from typing import Tuple, List, Optional, Union
 
 
 @dataclass
@@ -15,6 +15,7 @@ class ActionParameter:
     range: str
     type: str
     label: str
+    defaultValue: Optional[Union[int, float]]
 
     def toArg(self) -> Tuple[str, str]:
         return (self.name, self.type)
@@ -25,19 +26,19 @@ class ActionParameterCollection:
         self._groups = dict()
         self._parameters = dict()
 
-        self.add(ActionParameter(group="Parameters", name = 'omega', description = 'Forcing frequency', range = 'positive', type = 'double', label = 'ω'))
-        self.add(ActionParameter(group="Parameters", name = 'sigma', description = 'Obstacle offset', range = '', type = 'double', label = 'σ'))
-        self.add(ActionParameter(group="Parameters", name = 'r', description = 'Coefficient of restitution', range = 'non-negative', type = 'double', label = 'r'))
+        self.add(ActionParameter(group="Parameters", name = 'omega', description = 'Forcing frequency', range = 'positive', type = 'double', label = 'ω', defaultValue=None))
+        self.add(ActionParameter(group="Parameters", name = 'sigma', description = 'Obstacle offset', range = '', type = 'double', label = 'σ', defaultValue=None))
+        self.add(ActionParameter(group="Parameters", name = 'r', description = 'Coefficient of restitution', range = 'non-negative', type = 'double', label = 'r', defaultValue=None))
     
-        self.add(ActionParameter(group="Initial", name = 'phi', description = 'Phase (modulo 1)', range = 'circle', type = 'double', label = 'φ'))
-        self.add(ActionParameter(group="Initial", name = 'v', description = 'Velocity', range = 'non-negative', type = 'double', label = 'v'))
+        self.add(ActionParameter(group="Initial", name = 'phi', description = 'Phase (modulo 1)', range = 'circle', type = 'double', label = 'φ', defaultValue=0.5))
+        self.add(ActionParameter(group="Initial", name = 'v', description = 'Velocity', range = 'non-negative', type = 'double', label = 'v', defaultValue=0))
     
-        self.add(ActionParameter(group="Options", name = 'max_periods', description = 'Max forcing periods between impacts', range = 'positive', type = 'uint', label = 'P'))
-        self.add(ActionParameter(group="Options", name = 'num_impacts', description = 'Number of impacts to plot', range = 'positive', type = 'uint', label = 'N'))
-        self.add(ActionParameter(group="Options", name = 'num_points', description = 'Number points along singularity set', range = 'positive', type = 'uint', label = 'M'))
-        self.add(ActionParameter(group="Options", name = 'n_phi_increments', description = 'Number of phase increments for DOA plot', range = 'positive', type = 'uint', label = 'Nφ'))
-        self.add(ActionParameter(group="Options", name = 'n_v_increments', description = 'Number of velocity increments for DOA plot', range = 'positive', type = 'uint', label = 'Nv'))
-        self.add(ActionParameter(group="Options", name = 'max_velocity', description = 'Maximum velocity for DOA plot', range = 'non-negative', type = 'double', label = 'vmax'))
+        self.add(ActionParameter(group="Options", name = 'max_periods', description = 'Max forcing periods between impacts', range = 'positive', type = 'uint', label = 'P', defaultValue=100))
+        self.add(ActionParameter(group="Options", name = 'num_impacts', description = 'Number of impacts to plot', range = 'positive', type = 'uint', label = 'N', defaultValue=5000))
+        self.add(ActionParameter(group="Options", name = 'num_points', description = 'Number points along singularity set', range = 'positive', type = 'uint', label = 'M', defaultValue=5000))
+        self.add(ActionParameter(group="Options", name = 'n_phi_increments', description = 'Number of phase increments for DOA plot', range = 'positive', type = 'uint', label = 'Nφ', defaultValue=200))
+        self.add(ActionParameter(group="Options", name = 'n_v_increments', description = 'Number of velocity increments for DOA plot', range = 'positive', type = 'uint', label = 'Nv', defaultValue=200))
+        self.add(ActionParameter(group="Options", name = 'max_velocity', description = 'Maximum velocity for DOA plot', range = 'non-negative', type = 'double', label = 'vmax', defaultValue=4.0))
 
     def add(self, parameter: ActionParameter) -> None:
         self._parameters[parameter.name] = parameter
@@ -80,7 +81,7 @@ class ActionCollection:
 
         for action_name, action in self._actions.items():
             names = action[0]
-            result[action_name] = self._parameters.action_info(names)
+            result[action_name] = dict([("description", action[1]), ("groups", self._parameters.action_info(names))])
 
         return result
   
@@ -140,7 +141,7 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--max-periods", default=100, type=int, help="The number of forcing cycles before the simulator will assume that an impact will not succeed")
     parser.add_argument("-f", "--phi", type=float, help="The initial phase", default=0.5)
     parser.add_argument("-v", "--v", type=float, help="The initial velocity", default=0.0)
-    parser.add_argument("-m", "--max-velocity", type=float, help="The initial velocity", default=0.0)
+    parser.add_argument("-m", "--max-velocity", type=float, help="Maximum velocity for DOA plot", default=4.0)
     parser.add_argument("-i", "--num-impacts", default=4000, type=int, help="The number of impacts")
     parser.add_argument("--n-v-increments", default=100, type=int, help="The number of v increments for a doa plot")
     parser.add_argument("--n-phi-increments", default=100, type=int, help="The number of phase increments for a doa plot")

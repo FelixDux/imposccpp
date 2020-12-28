@@ -72,13 +72,12 @@ button.toggle {
 .tooltip {
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
 
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 150px;
+  width: 250px;
   background-color: #bbbbcc;
   color: #fff;
   text-align: center;
@@ -101,29 +100,43 @@ button.toggle {
 .header {
   background-color:paleturquoise;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
 }
 
  /* The navbar container */
  .topnav {
   overflow: hidden;
-  background-color: #333;
+  background-color: paleturquoise;
+  align-content: center;
+  padding-top: 80px;
+  padding-left: 60px;
+  padding-right: 60px;
 }
 
 /* Navbar links */
 .topnav a {
   float: left;
   display: block;
-  color: paleturquoise;
+  background-color: paleturquoise;
+  color: black;
   text-align: center;
-  padding: 14px 16px;
   text-decoration: none;
+  border: none;
+  border-right: 1px solid #bbb;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 /* Links - change color on hover */
 .topnav a:hover {
   background-color: #ddd;
   color: black;
+} 
+
+/* Links - change color on selected */
+.topnav a:active {
+  background-color:black;
+  color: paleturquoise;
 } 
 
 .column {
