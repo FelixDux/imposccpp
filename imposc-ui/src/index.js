@@ -53,7 +53,7 @@ class PlotterInput extends React.Component {
             id={this.props.name}
             name={this.props.name}
             type="number"
-            defaultValue={this.props.value}
+            value={this.props.value}
             onChange={this.props.onChange}
             step = {step}
             min = {min}
@@ -79,61 +79,61 @@ class PlotterInputGroup extends React.Component {
   }
 
   render() {
-    const inputs = this.state.isOpen ? this.props.inputs.map(
-      (record) =>
-      {
-        return (
-          <PlotterInput 
-            name = {record.name}
-            label = {record.label}
-            tooltip = {record.description}
-            value = {this.props.values[record.name]}
-            range = {record.range}
-            type = {record.type}
-            onChange={this.props.onChange}
-          />
-        );
-      }
-    ) : null;
+    if (this.props.inputs.length > 0)  {
 
-    return (
-      <table className = "inputGroup" >
-        <tr>
-          <th className = "inputGroup">{this.props.name} 
-            <button type = "button" className = "toggle" onClick = {this.handleToggleClick}>
-              {this.state.isOpen ? "-" : "+"}
-            </button>
-          </th>
-        </tr>
-        <tr className = "inputGroup"><td className = "inputGroup" >
+      const inputs = this.state.isOpen ? this.props.inputs.map(
+        (record) =>
+          {
+            return (
+              <PlotterInput 
+                name = {record.name}
+                label = {record.label}
+                tooltip = {record.description}
+                value = {this.props.values[record.name]}
+                range = {record.range}
+                type = {record.type}
+                onChange={this.props.onChange}
+              />
+            );
+          }
+        ) : [];
+        
+        return (
         <table className = "inputGroup" >
-        {inputs}
+          <tr>
+            <th className = "inputGroup">{this.props.name} 
+              <button type = "button" className = "toggle" onClick = {this.handleToggleClick}>
+                {this.state.isOpen ? "-" : "+"}
+              </button>
+            </th>
+          </tr>
+          <tr className = "inputGroup"><td className = "inputGroup" >
+          <table className = "inputGroup" >
+          {inputs}
+          </table>
+          </td></tr>
         </table>
-        </td></tr>
-      </table>
-    )
+      )
+    }
+    else {
+      return ( <table className = "inputGroup" ></table> )
+    }
   }
 };
 
 class PlotterForm extends React.Component {
   constructor(props) {
     super(props);
-    
-    let args = {};
-    Object.entries(props.groups).forEach(([groupName,group]) => {
-      for (let record of group) {
-        args[record.name] = record.defaultValue;
-      }
-    });
 
     this.state = {
       blob: null,
       src: "",
-      args: args,
+      args: {},
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.argsToSubmit = this.argsToSubmit.bind(this);
   }
 
   handleInputChange(event) {    
@@ -143,18 +143,35 @@ class PlotterForm extends React.Component {
     let args = this.state.args;
     args[name] = value;
     this.setState({ args: args });
+  }
+
+  argsToSubmit () {
+    var groups = Object.values(this.props.groups);
+
+    var records = groups.flat();
     
-    // this.updateFields();
+    var args = records.reduce(
+      function (r, record) {
+        return Object.assign(r, {
+          [record.name]: !(record.name in r) || r[record.name] === null ? record.defaultValue : r[record.name]
+        });
+      }, 
+      this.state.args
+    );
+
+    return args;
   }
 
   updateFields() {
 
-    for (var name of this.state.args) {
+    for (var name in this.state.args) {
       document.getElementById(name).setAttribute('value', this.state.args[name]);
     }
   }
 
   handleSubmit(event) {
+    const args = this.argsToSubmit();
+
     fetch(this.props.url,
       {
         method: 'POST',
@@ -162,7 +179,7 @@ class PlotterForm extends React.Component {
             Accept: 'application/json',
                     'Content-Type': 'application/json',
         },
-        body: JSON.stringify(this.state.args)
+        body: JSON.stringify(args)
       })
     .then(response => {
       if (!response.ok) {
@@ -184,8 +201,9 @@ class PlotterForm extends React.Component {
     
     const groups = Object.entries(this.props.groups).map(([groupName,group]) => {
       const values = Object.assign({}, ...group.map((record) => ({
-        [record.name]: this.state.args[record.name]
+        [record.name]: this.state.args[record.name] == null ? record.defaultValue : this.state.args[record.name]
       })));
+
       return (
         <PlotterInputGroup 
           name = {groupName}
@@ -240,6 +258,8 @@ class PlotterApp extends React.Component {
     };
 
     this.populate();
+
+    this.handleActionChange = this.handleActionChange.bind(this);
   };
 
   populate() {
@@ -257,8 +277,6 @@ class PlotterApp extends React.Component {
     .catch(error => {
       console.error('Fetch operation failed:', error);
     });
-
-    this.handleActionChange = this.handleActionChange.bind(this);
   };
 
   handleActionChange(event) {
@@ -274,7 +292,7 @@ class PlotterApp extends React.Component {
   render() {
 
     const actionUrl = this.props.url + '/' + this.state.action;
-    const actionGroups = this.state.action ? this.state.actions[this.state.action]["groups"] : {};
+    const actionGroups = (this.state.action in this.state.actions) ? this.state.actions[this.state.action]["groups"] : {};
 
     const actionLinks = Object.entries(this.state.actions).map(
       ([actionName, actionInfo]) => {
@@ -319,13 +337,11 @@ ReactDOM.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-// TODO: Make imposc service self-documenting via JSON (actions, descriptions, variable lists, with descriptions - try to follow same structure as Elixir project)
-// TODO: Include navigation bar for plot types
-// TODO: Construct form element from actions JSON
 // TODO: make imposc service address and port number configurable
 // TODO: don't forget unit tests, docstrings, comments
 // TODO: tidy up plotting legends etc
 // TODO: move to using react-router for navigation
+// TODO: add page on mathematical background
 // TODO: Dockerise
 // TODO: Orchestrate with K8s?
 // TODO: Pull Elixir project into same structure

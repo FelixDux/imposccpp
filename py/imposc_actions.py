@@ -99,26 +99,38 @@ class ImposcActions:
 
     def impacts(self, **kwargs) -> Path:
         errors = LibErrors()
-        outfile = self._cache.offer_new_file()
-        if self._imposclib.impacts(outfile=outfile, errorfile=errors.errorFile, **kwargs):
-            return outfile
-        else:
+        try:
+            outfile = self._cache.offer_new_file()
+            if self._imposclib.impacts(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+                return outfile
+            else:
+                return errors.errorPath
+        except TypeError as e:
+            errors.put(f"{e}")
             return errors.errorPath
 
     def singularity_set(self, **kwargs) -> Path:
         errors = LibErrors()
-        outfile = self._cache.offer_new_file()
-        if self._imposclib.singularity_set(outfile=outfile, errorfile=errors.errorFile, **kwargs):
-            return outfile
-        else:
+        try:
+            outfile = self._cache.offer_new_file()
+            if self._imposclib.singularity_set(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+                return outfile
+            else:
+                return errors.errorPath
+        except TypeError as e:
+            errors.put(f"{e}")
             return errors.errorPath
 
     def doa(self, **kwargs) -> Path:
         errors = LibErrors()
-        outfile = self._cache.offer_new_file()
-        if self._imposclib.doa(outfile=outfile, errorfile=errors.errorFile, **kwargs):
-            return outfile
-        else:
+        try:
+            outfile = self._cache.offer_new_file()
+            if self._imposclib.doa(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+                return outfile
+            else:
+                return errors.errorPath
+        except TypeError as e:
+            errors.put(f"{e}")
             return errors.errorPath
             
 
