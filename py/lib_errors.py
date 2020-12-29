@@ -25,3 +25,7 @@ class LibErrors:
             return self._log.read_text()
         else:
             return ""
+
+    def put(self, message):
+        with self._log.open(mode='a') as stream:
+            stream.writelines([message])

@@ -63,5 +63,6 @@
         "typeinfo": "cpp",
         "codecvt": "cpp",
         "cinttypes": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/imposc-cpp"
 }

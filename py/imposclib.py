@@ -5,17 +5,7 @@ from libwrapper import LibWrapper, wrap_path
 class ImposcIF(LibWrapper):
 
     def __init__(self):
-        super().__init__(pathlib.Path(__file__).parent.parent.absolute() / "build/imposcpy/libimposcpy.so")
-
-        self.add_function("map_impacts", "bool", 
-            [("omega", "double"), ("r", "double"), ("sigma", "double"), ("max_periods", "uint"), ("phi", "double"), ("v", "double"), ("num_impacts", "uint"), ("outfile", "Path"), ("errorfile", "Path")]
-            )
-        self.add_function("map_singularity_set", "bool", 
-            [("omega", "double"), ("r", "double"), ("sigma", "double"), ("max_periods", "uint"), ("num_points", "uint"), ("outfile", "Path"), ("errorfile", "Path")]
-            )
-        self.add_function("map_doa", "bool", 
-            [("omega", "double"), ("r", "double"), ("sigma", "double"), ("max_periods", "uint"), ("max_velocity", "double"), ("n_v_increments", "uint"), ("n_phi_increments", "uint"), ("outfile", "Path"), ("errorfile", "Path")]
-            )
+        super().__init__(pathlib.Path(__file__).parent.parent.absolute() / "imposc-cpp/build/imposcpy/libimposcpy.so")
 
     def impacts(self, **kwargs) -> bool:
         return self.make_call("map_impacts", kwargs)
@@ -31,7 +21,6 @@ if __name__ == "__main__":
 
     imposc = ImposcIF()
 
-    # outfile = str(pathlib.Path(__file__).parent.absolute() /  "myfile.png")
     outfile = "myfile.png"
     errorfile = "errorfile.txt"
 

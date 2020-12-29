@@ -8,6 +8,10 @@ __pycache__
 
 **/.venv/
 
-build/
+**/build/
 errors/
 errorfile.txt
+*.cmake
+**/CMakeFiles
+Makefile
+imposc-ui/.eslintcache
