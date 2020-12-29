@@ -19,7 +19,6 @@ function App() {
 
 export default App;
 
-// TODO: proper passing-through of error messages
 // TODO: don't forget unit tests, docstrings, comments
 // TODO: tidy up plotting legends etc
 // TODO: move to using react-router for navigation

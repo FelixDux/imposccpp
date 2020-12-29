@@ -180,14 +180,23 @@ class PlotterInput extends React.Component {
         })
       .then(response => {
         if (!response.ok) {
-          throw new Error('Network response failed');
+            response.json().then((json) => {                    
+                if ('error' in json) {
+                    this.setState({result: json['error']});
+                }
+                else {
+                    this.setState({result: 'Unknown error'});
+                }
+            });
         }
         return response.blob();
       })
       .then(blob => {
-        this.setState( {blob: blob, src: URL.createObjectURL(blob), result: "Done"});
+          if (blob) {
+              this.setState( {blob: blob, src: URL.createObjectURL(blob), result: "Done"});
+          }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Fetch operation failed:', error);
         this.setState({result: error.toString()});
       });
@@ -221,7 +230,7 @@ class PlotterInput extends React.Component {
           {groups}
         <input type={submitType} value="Show" />
         </form></div>      
-        <div className="column right" ><img src={this.state.src} alt="" width="80%" align="center" /></div>
+        <div className="column right" ><img src={this.state.src} alt={this.state.result} width="80%" align="center" /></div>
         </div>
       )
     }
@@ -266,7 +275,14 @@ class PlotterInput extends React.Component {
       fetch(this.props.url)
       .then(response => {
         if (!response.ok) {
-          throw new Error('Network response failed');
+            response.json().then((json) => {                    
+                if ('error' in json) {
+                    this.setState({result: json['error']});
+                }
+                else {
+                    this.setState({result: 'Unknown error'});
+                }
+            });
         }
         return response.json();
       })

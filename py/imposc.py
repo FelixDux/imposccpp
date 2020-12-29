@@ -2,7 +2,7 @@ from imposc_actions import ImposcActions
 import io
 from pathlib import Path
 from inspect import signature, Parameter
-from flask import Flask, request, make_response, send_file, render_template, jsonify
+from flask import Flask, request, make_response, send_file, render_template, jsonify, abort
 from markupsafe import Markup
 from flask_cors import CORS
 import logging
@@ -48,6 +48,18 @@ def marshall_arguments(action_function, args: dict):
 
     return result, outcome
 
+@app.errorhandler(422)
+def bad_arguments(message: str):
+    return jsonify(error=str(message)), 422
+
+@app.errorhandler(400)
+def bad_request(message: str):
+    return jsonify(error=str(message)), 400
+
+@app.errorhandler(404)
+def bad_endpoint(message: str):
+    return jsonify(error=str(message)), 404
+
 @app.route('/')
 def index():
     return jsonify(actions.info())
@@ -74,10 +86,10 @@ def do_action(action):
                 args = request.args
 
             else:
-                return make_response(render_template("error.html", message=f"No arguments supplied for {action}"), 422)
+                abort(422, f"No arguments supplied for {action}")
 
         except Exception as e:
-            return make_response(render_template("error.html", message=f"{e}"), 400)
+            abort(400, f"{e}")
 
         logger.log(level=logging.DEBUG, msg=f"Args: {args}")
 
@@ -89,7 +101,7 @@ def do_action(action):
         if outcome:
             message = Markup(f"<ul><li>{'<li>'.join(outcome)}</ul>")
             
-            return make_response(render_template("error.html", message=message), 422)
+            abort(422, message)
         else:
             # Pass to function
             outfile: Path = action_function(**marshalled_args)
@@ -101,7 +113,7 @@ def do_action(action):
                 if outfile.exists():
                     message = outfile.read_text()
 
-                return make_response(render_template("error.html", message=message), 422)
+                return abort(422, message)
             else:
                 # Return bytestream
                 with outfile.open(mode = "rb") as image:
@@ -111,4 +123,4 @@ def do_action(action):
                                 mimetype = image_content_type(outfile)
                         )
     else:
-        return make_response(render_template("error.html", message=f"Unknown endpoint {action}"), 404)
+        return abort(404, f"Unknown endpoint {action}")
