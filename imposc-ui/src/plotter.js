@@ -1,13 +1,36 @@
 import React from 'react';
 import './plotter.css';
+import PropTypes from 'prop-types'
 
+
+/**
+ * Form field for inputting an action argument to pass to the imposc service
+ */
 class PlotterInput extends React.Component {
+
+    static propTypes = {
+        /** The (numeric) type of the argument */
+        type: PropTypes.string,
+        /** Rule for the permitted range of values for a numeric argument */
+        range: PropTypes.string,
+        /** The argument name that will be passed to the imposc service */
+        name: PropTypes.string,
+        /** The name to be displayed on the form */
+        label: PropTypes.string,
+        /** A description to be shown as a tooltip */
+        tooltip: PropTypes.string,
+        /** A current value used to initialise the field */
+        value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+        /** Handler for a change in value */
+        onChange: PropTypes.func
+    }
 
     render() {
       const step = (this.props.type === 'integer' || this.props.type === 'uint') ? 1 : 0.01;
       let min = '';
       let max = '';
   
+      // Interpret the range
       switch (this.props.range)
       {
         case 'non-negative': {
@@ -62,7 +85,22 @@ class PlotterInput extends React.Component {
     }
   };
   
+  /**
+   * An expandable set of related input fields
+   */
   class PlotterInputGroup extends React.Component {
+
+    static propTypes = {
+        /** An array of dictionaries defining the properties of the constituent input fields */
+        inputs: PropTypes.array,
+        /** The name of the group */
+        name: PropTypes.string,
+        /** A dictionary of current values used to initialise each field */
+        values: PropTypes.array,
+        /** Handler for a change in value for each input - passed down the the input fields */
+        onChange: PropTypes.func
+    }
+
     constructor(props) {
       super(props);
   
@@ -71,6 +109,7 @@ class PlotterInput extends React.Component {
       this.state = {isOpen: true};
     }
   
+    /** Handler for expanding/hiding the fields in the group */
     handleToggleClick() {
       this.setState( {isOpen: !this.state.isOpen});
     }
@@ -78,6 +117,7 @@ class PlotterInput extends React.Component {
     render() {
       if (this.props.inputs.length > 0)  {
   
+        // Generate the field elements to display (none if hidden)
         const inputs = this.state.isOpen ? this.props.inputs.map(
           (record) =>
             {
@@ -118,14 +158,29 @@ class PlotterInput extends React.Component {
     }
   };
   
+  /**
+   * A form which accepts the arguments for a specified action, submits them to the imposc service and displays the returned image
+   */
   class PlotterForm extends React.Component {
+
+    static propTypes = {
+        /** The address of the imposc service with the endpoint for the selected action */
+        url: PropTypes.string,
+        /** A dictionary of arrays of input specifications keyed by group name */
+        groups: PropTypes.object
+    }
     constructor(props) {
       super(props);
   
       this.state = {
-        blob: null,
-        src: "",
-        args: {},
+          /** The returned image as a binary object */
+          blob: null,
+          /** An object url for displaying the image */
+          src: "",
+          /** Current values of all the action arguments */
+          args: {},
+          /** Alt text for the image - used to display error messages from the imposc service */
+          result: ""
       };
   
       this.handleInputChange = this.handleInputChange.bind(this);
@@ -133,6 +188,10 @@ class PlotterInput extends React.Component {
       this.argsToSubmit = this.argsToSubmit.bind(this);
     }
   
+    /**
+     * Handler for changes to an input field - stores the value in state
+     * @param {*} event 
+     */
     handleInputChange(event) {    
       const target = event.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -142,6 +201,7 @@ class PlotterInput extends React.Component {
       this.setState({ args: args });
     }
   
+    /** Marshals arguments to submit, applying default values where necessary */
     argsToSubmit () {
       var groups = Object.values(this.props.groups);
   
@@ -159,13 +219,10 @@ class PlotterInput extends React.Component {
       return args;
     }
   
-    updateFields() {
-  
-      for (var name in this.state.args) {
-        document.getElementById(name).setAttribute('value', this.state.args[name]);
-      }
-    }
-  
+    /**
+     * Submits the form data as a JSON request to the imposc service and displays the result
+     * @param {*} event 
+     */
     handleSubmit(event) {
       const args = this.argsToSubmit();
   
@@ -220,6 +277,7 @@ class PlotterInput extends React.Component {
         );
       });
 
+      // If no action has been selected, there will be no fields, so hide the submit button
       const submitType = groups.length > 0 ? "submit" : "hidden"
   
       return (
@@ -236,7 +294,24 @@ class PlotterInput extends React.Component {
     }
   };
   
+  /**
+   * Allows an available action to be selected in the navigation bar. Each action is an endpoint in the imposc service
+   */
   class ActionSelector extends React.Component {
+
+    static propTypes = {
+        /** The action (service endpoint) */
+        action: PropTypes.string,
+        /** Flags whether this is the currently selected action */
+        active: PropTypes.bool,
+        /** Short description of the action - what gets displayed */
+        label: PropTypes.string,
+        /** Explanatory text, displayed as a tooltip */
+        description: PropTypes.string,
+        /** Handler for selecting the action */
+        onClick: PropTypes.func
+    }
+    
     constructor(props) {
       super(props);
       const activeClass = this.props.active ? 'active' : '';
@@ -256,7 +331,14 @@ class PlotterInput extends React.Component {
     }
   }
   
+  /** Wraps everything needed for selecting and action, inputting the arguments and displaying the result */
   class PlotterApp extends React.Component {
+
+    static propTypes = {
+        /** The address of the imposc service */
+        url: PropTypes.string
+    }
+
     constructor(props) {
       super(props);
   
@@ -270,6 +352,7 @@ class PlotterInput extends React.Component {
       this.handleActionChange = this.handleActionChange.bind(this);
     };
   
+    /** Retrieves and stores the action definitions from the imposc service */
     populate() {
   
       fetch(this.props.url)
@@ -294,6 +377,7 @@ class PlotterInput extends React.Component {
       });
     };
   
+    /** Captures the selected action and uses to ensure the form displays the correct fields */
     handleActionChange(event) {
       const target = event.target;
   
@@ -309,6 +393,7 @@ class PlotterInput extends React.Component {
       const actionUrl = this.props.url + '/' + this.state.action;
       const actionGroups = (this.state.action in this.state.actions) ? this.state.actions[this.state.action]["groups"] : {};
   
+      // Links for the navigation bar
       const actionLinks = Object.entries(this.state.actions).map(
         ([actionName, actionInfo]) => {
           return (

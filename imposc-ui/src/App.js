@@ -2,6 +2,9 @@ import './App.css';
 import PlotterApp from './plotter'
 import Config from './config';
 
+/**
+ * The application element
+ */
 function App() {
   const config = new Config();
 
@@ -21,7 +24,6 @@ export default App;
 
 // TODO: don't forget unit tests, docstrings, comments
 // TODO: tidy up plotting legends etc
-// TODO: move to using react-router for navigation
 // TODO: add page on mathematical background
 // TODO: Dockerise
 // TODO: Orchestrate with K8s?
