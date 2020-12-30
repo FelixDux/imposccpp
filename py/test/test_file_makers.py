@@ -8,11 +8,11 @@ def test_file_name(extension):
 
     tokens = name.split('.')
 
-    assert(len(tokens) == 2)
+    assert(len(tokens) == 2), "File name has no extension or additional '.'s"
 
-    assert(tokens[-1] == extension)
+    assert(tokens[-1] == extension), "File name has wrong extension"
 
-    assert(tokens[0].isnumeric())
+    assert(tokens[0].isnumeric()), "File prefix should be numeric"
 
 def test_files_size():
     files = [
