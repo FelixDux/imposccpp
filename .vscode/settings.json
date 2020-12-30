@@ -65,11 +65,13 @@
         "cinttypes": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}/imposc-cpp",
-    "python.linting.pylintPath": "${workspaceFolder}/py/.venv/bin/pylint",
+    "python.linting.pylintPath": "${workspaceFolder}/imposcpy/.venv/bin/pylint",
     "python.autoComplete.extraPaths": [
     "${workspaceFolder}/py/src"
     ],
     "terminal.integrated.env.linux": {
-        "PYTHONPATH": "${workspaceFolder}/py/src"
-    }
+        "PYTHONPATH": "${workspaceFolder}/imposcpy/src"
+    },
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }
