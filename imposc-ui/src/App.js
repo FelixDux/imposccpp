@@ -1,5 +1,5 @@
 import './App.css';
-import PlotterApp from './plotter'
+import {PlotterApp} from './plotter'
 import Config from './config';
 
 /**

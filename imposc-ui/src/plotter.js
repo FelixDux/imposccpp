@@ -65,8 +65,8 @@ class PlotterInput extends React.Component {
           <tr>
             <td className = "inputGroup" width="10%"></td>
             <td className = "inputGroup" >
-              <div class="tooltip">{this.props.label}
-              <span class="tooltiptext">{this.props.tooltip}</span></div>
+              <div className="tooltip">{this.props.label}
+              <span className="tooltiptext">{this.props.tooltip}</span></div>
               </td>
             <td className = "inputGroup" >
               <input 
@@ -96,7 +96,7 @@ class PlotterInput extends React.Component {
         /** The name of the group */
         name: PropTypes.string,
         /** A dictionary of current values used to initialise each field */
-        values: PropTypes.array,
+        values: PropTypes.object,
         /** Handler for a change in value for each input - passed down the the input fields */
         onChange: PropTypes.func
     }
@@ -123,6 +123,7 @@ class PlotterInput extends React.Component {
             {
               return (
                 <PlotterInput 
+                  key = {record.name}
                   name = {record.name}
                   label = {record.label}
                   tooltip = {record.description}
@@ -137,6 +138,7 @@ class PlotterInput extends React.Component {
           
           return (
           <table className = "inputGroup" >
+            <tbody>
             <tr>
               <th className = "inputGroup">{this.props.name} 
                 <button type = "button" className = "toggle" onClick = {this.handleToggleClick}>
@@ -146,9 +148,12 @@ class PlotterInput extends React.Component {
             </tr>
             <tr className = "inputGroup"><td className = "inputGroup" >
             <table className = "inputGroup" >
+            <tbody>
             {inputs}
+            </tbody>
             </table>
             </td></tr>
+            </tbody>
           </table>
         )
       }
@@ -422,5 +427,5 @@ class PlotterInput extends React.Component {
     }
   };
 
-  export default PlotterApp;
+  export {PlotterApp, PlotterInput, PlotterInputGroup, PlotterForm, ActionSelector};
   
