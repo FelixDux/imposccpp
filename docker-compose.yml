@@ -1,6 +1,6 @@
 version: '3'
 services:
-  web:
+  ui:
     stdin_open: true
     build:
       context: ./imposc-ui
@@ -10,7 +10,7 @@ services:
     volumes:
       - /app/node_modules
       - ./imposc-ui:/app
-  tests:
+  test-ui:
     stdin_open: true
     build:
       context: ./imposc-ui
@@ -18,4 +18,14 @@ services:
     volumes:
       - /app/node_modules
       - ./imposc-ui:/app
-    command: ["npm", "run", "test"]
+    command: ["npm", "run", "test"]  
+  test-cpp:
+    stdin_open: true
+    build:
+      context: ./imposc-cpp
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /usr/src/proj/build
+      - ./imposc-cpp:/usr/src/proj
+    command: ["./build/test/Test"]
+  

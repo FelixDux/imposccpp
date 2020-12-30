@@ -1,5 +1,6 @@
 *.swp
 *.png
+*.log
 TODO.txt
 addfiles.bash
 addlib.bash
@@ -15,3 +16,4 @@ errorfile.txt
 **/CMakeFiles
 Makefile
 imposc-ui/.eslintcache
+imposc-cpp/Testing

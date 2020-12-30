@@ -1,0 +1,15 @@
+FROM rikorose/gcc-cmake
+
+WORKDIR /usr/src/proj
+
+COPY . .
+
+# Install Gnuplot (needed for charting)
+RUN apt-get update
+RUN apt-get install -y gnuplot
+
+# Build project with cmake
+RUN mkdir -p build && cd build && rm -rf * && cmake .. && cmake --build . 
+#--config Release --target all -- -j 10
+
+CMD ["./build/imposc"]
