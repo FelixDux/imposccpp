@@ -64,5 +64,12 @@
         "codecvt": "cpp",
         "cinttypes": "cpp"
     },
-    "cmake.sourceDirectory": "${workspaceFolder}/imposc-cpp"
+    "cmake.sourceDirectory": "${workspaceFolder}/imposc-cpp",
+    "python.linting.pylintPath": "${workspaceFolder}/py/.venv/bin/pylint",
+    "python.autoComplete.extraPaths": [
+    "${workspaceFolder}/py/src"
+    ],
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "${workspaceFolder}/py/src"
+    }
 }
