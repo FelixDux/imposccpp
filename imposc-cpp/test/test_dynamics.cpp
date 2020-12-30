@@ -230,12 +230,15 @@ TEST_CASE( "Test for near equality of impacts works correctly ", "[impact]") {
 	Impact impact1(converter, 0, 1);
 	Impact impact2(converter, 0.0001, 1.0001);
 	Impact impact3(converter, 0.3, 0.2);
-	Impact impact4(converter, 0.99999*converter.get_period(), 1);
+	Impact impact4(converter, 1.0000001*converter.get_period(), 1);
+	Impact impact5(converter, 0.99999*converter.get_period(), 1);
 
 	REQUIRE(impact1.almost_equal(impact2));
 
 	REQUIRE(!impact3.almost_equal(impact2));
 
 	REQUIRE(impact1.almost_equal(impact4));
+
+	REQUIRE(impact1.almost_equal(impact5));
 }
 
