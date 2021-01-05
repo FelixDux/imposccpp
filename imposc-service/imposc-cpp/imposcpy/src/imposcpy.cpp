@@ -4,10 +4,27 @@
 #include "charts.hpp"
 #include "doa_plot.hpp"
 
+#include <fstream>
+
 using namespace dynamics;
 using namespace charts;
 
-bool map_impacts(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
+class ErrorLogger
+{
+    public:
+
+    ErrorLogger(const char* logfile):logger(logfile) {}
+
+    void log(const std::string &message)
+    {
+        logger << message << std::endl;
+    }
+
+    private:
+        std::ofstream logger;
+};
+
+unsigned char map_impacts(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
  Phase phi, Velocity v, unsigned int num_iterations, const char* outfile, const char* logfile)
 {
 	ErrorLogger logger(logfile);
@@ -24,13 +41,13 @@ bool map_impacts(Frequency omega, Scalar r, Displacement sigma, unsigned int max
 	{
 		logger.log(e.what());
 
-		return false;
+		return 0;
 	}
 
-    return true;
+    return 1;
 }
 
-bool map_singularity_set(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
+unsigned char map_singularity_set(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
  unsigned int num_points, const char* outfile, const char* logfile)
 {
 	ErrorLogger logger(logfile);
@@ -47,13 +64,13 @@ bool map_singularity_set(Frequency omega, Scalar r, Displacement sigma, unsigned
 	{
 		logger.log(e.what());
 		
-		return false;
+		return 0;
 	}
 
-    return true;
+    return 1;
 }
 
-bool map_doa(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
+unsigned char map_doa(Frequency omega, Scalar r, Displacement sigma, unsigned int max_periods,
  Velocity max_velocity, unsigned int n_v_increments, unsigned int n_phi_increments, 
  unsigned int n_iterations, const char* outfile, const char* logfile)
 {
@@ -69,8 +86,8 @@ bool map_doa(Frequency omega, Scalar r, Displacement sigma, unsigned int max_per
 	{
 		logger.log(e.what());
 		
-		return false;
+		return 0;
 	}
 
-    return true;
+    return 1;
 }

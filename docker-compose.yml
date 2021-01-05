@@ -10,6 +10,16 @@ services:
     volumes:
       - /app/node_modules
       - ./imposc-ui:/app
+  service:
+    stdin_open: true
+    build:
+      context: ./imposc-service
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5000:5000"
+    volumes:
+      - /usr/src/proj/build
+      - ./imposc-service:/usr/src/proj
   test-ui:
     stdin_open: true
     build:
@@ -22,10 +32,19 @@ services:
   test-cpp:
     stdin_open: true
     build:
-      context: ./imposc-cpp
+      context: ./imposc-service/imposc-cpp
       dockerfile: Dockerfile.dev
     volumes:
-      - /usr/src/proj/build
-      - ./imposc-cpp:/usr/src/proj
+      - /usr/src/proj/imposc-cpp/build
+      - ./imposc-service/imposc-cpp:/usr/src/proj/imposc-cpp
     command: ["./build/test/Test"]
+  test-service:
+    stdin_open: true
+    build:
+      context: ./imposc-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /usr/src/proj/imposc-cpp/build
+      - ./imposc-service:/usr/src/proj
+    command: ["python","-m","pytest"]
   

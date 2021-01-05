@@ -74,7 +74,7 @@ class ActionCollection:
             names = action[0]
             args = self._parameters.args(names)
             args.extend([("outfile", "Path"), ("errorfile", "Path")])
-            lib.add_function(f"map_{action_name}", "bool", args)
+            lib.add_function(f"{action_name}", "bool", args)
 
     def info(self) -> dict:
         result = dict()
@@ -100,8 +100,8 @@ class ImposcActions:
     def impacts(self, **kwargs) -> Path:
         errors = LibErrors()
         try:
-            outfile = self._cache.offer_new_file()
-            if self._imposclib.impacts(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+            outfile = str(self._cache.offer_new_file())
+            if self._imposclib.impacts(outfile=outfile.encode('utf-8'), errorfile=errors.errorFile.encode('utf-8'), **kwargs):
                 return outfile
             else:
                 return errors.errorPath
@@ -112,8 +112,8 @@ class ImposcActions:
     def singularity_set(self, **kwargs) -> Path:
         errors = LibErrors()
         try:
-            outfile = self._cache.offer_new_file()
-            if self._imposclib.singularity_set(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+            outfile = str(self._cache.offer_new_file())
+            if self._imposclib.singularity_set(outfile=outfile.encode('utf-8'), errorfile=errors.errorFile.encode('utf-8'), **kwargs):
                 return outfile
             else:
                 return errors.errorPath
@@ -124,8 +124,8 @@ class ImposcActions:
     def doa(self, **kwargs) -> Path:
         errors = LibErrors()
         try:
-            outfile = self._cache.offer_new_file()
-            if self._imposclib.doa(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+            outfile = str(self._cache.offer_new_file())
+            if self._imposclib.doa(outfile=outfile.encode('utf-8'), errorfile=errors.errorFile.encode('utf-8'), **kwargs):
                 return outfile
             else:
                 return errors.errorPath
@@ -135,6 +135,9 @@ class ImposcActions:
             
 
 def do_and_show(image_file):
+    if isinstance(image_file, str):
+        image_file = Path(image_file)
+
     if image_file.exists():
         if image_file.suffix == ".txt":
             print(image_file.read_text())

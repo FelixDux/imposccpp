@@ -16,4 +16,9 @@ errorfile.txt
 **/CMakeFiles
 Makefile
 imposc-ui/.eslintcache
-imposc-cpp/Testing
+imposc-service/imposc-cpp/Testing
+imposc-service/imposcpy/src/imposc_library.cpp
+
+**/libs
+*.so
+*.a

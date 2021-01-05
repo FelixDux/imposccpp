@@ -5,7 +5,7 @@ services:
 
 before_install:
   - docker build -t happyleader/imposc-ui -f ./imposc-ui/Dockerfile.dev ./imposc-ui
-  - docker build -t happyleader/imposc-cpp -f ./imposc-cpp/Dockerfile.dev ./imposc-cpp
+  - docker build -t happyleader/imposc-cpp -f ./imposc-service/imposc-cpp/Dockerfile.dev ./imposc-service/imposc-cpp
 
 script:
   - docker run -e CI=true happyleader/imposc-ui npm run test -- --coverage
