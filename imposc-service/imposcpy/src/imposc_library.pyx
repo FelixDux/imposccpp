@@ -1,3 +1,8 @@
+# distutils: sources = ../../imposc-cpp/charts/src/charts.cpp  ../../imposc-cpp/dynamics/src/dynamics.cpp  ../../imposc-cpp/dynamics/src/motion.cpp  ../../imposc-cpp/imposcpy/src/imposcpy.cpp  ../../imposc-cpp/charts/src/doa_plot.cpp ../../imposc-cpp/dynamics/src/forcing_phase.cpp ../../imposc-cpp/dynamics/src/sticking.cpp
+# distutils: include_dirs= ../../imposc-cpp/charts/include/  ../../imposc-cpp/dynamics/include/  ../../imposc-cpp/imposcpy/include/
+# distutils: language = c++
+# cython: language_level=3
+# cython: extra_compile_args ="-std=c++17"
 
 cdef extern from "imposcpy.hpp":
     unsigned char map_impacts(double omega, double r, double sigma, unsigned int max_periods, double phi, double v, unsigned int num_iterations, const char* outfile, const char* logfile)

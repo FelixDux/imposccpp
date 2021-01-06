@@ -17,8 +17,10 @@ errorfile.txt
 Makefile
 imposc-ui/.eslintcache
 imposc-service/imposc-cpp/Testing
-imposc-service/imposcpy/src/imposc_library.cpp
+imposc-service/imposcpy/src/imposc_library.c*
+imposc-service/imposcpy/src/home
 
 **/libs
 *.so
 *.a
+*.o

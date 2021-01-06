@@ -16,32 +16,11 @@ def build_wrapper(package_name: str, library_name: str, library_dir: Path, heade
 
     package_library_file = Path(f"{package_module}{package_extension}")
 
-    if not package_library_file.is_file() or True:
+    if not package_library_file.is_file():
         package_pyx_file = package_module.with_suffix(".pyx")
-        package_cpp_file = package_module.with_suffix(".cpp")
 
-        lib_files = library_dir.glob("lib*.so")
-        libs = []
-
-        for f in lib_files:
-            libs.append(f.name) 
-            copy(str(f), str(this_dir / f.name))
-
-        lib_names = ' '.join([f.split('.')[0].replace('lib','-l') for f in libs])
-
-        cython_command = f"cython --working {this_dir} --cplus -I {library_dir} -3 {package_pyx_file} -o {package_cpp_file}".split(' ')
-        
-        run(cython_command)
-
-        c_flags = "-I/usr/include/python3.8 -Wno-unused-result -Wsign-compare -g -fdebug-prefix-map=/build/python3.8-xhc1jt/python3.8-3.8.5=. -specs=/usr/share/dpkg/no-pie-compile.specs -fstack-protector -Wformat -Werror=format-security -DNDEBUG -g -fwrapv -O3 -Wall" #run(["python3.8-config", "--cflags"], capture_output=True).stdout.decode().strip()
-        
-        ld_flags = run(["python3.8-config", "--ldflags"], capture_output=True).stdout.decode().strip()
-
-        build_command = f"g++ {c_flags} -shared -fPIC -std=c++17 -I{library_dir} {package_cpp_file} -o {package_library_file} {ld_flags} -L{this_dir} {lib_names} -Wl,-rpath,{this_dir} -Wl,-R -Wl,{this_dir}"
-        
-        build_tokens = [t for t in build_command.split(' ') if t]
-        
-        run(build_tokens)
+        setup_command = "python setup.py build_ext --inplace"
+        run([t for t in setup_command.split(' ') if t])
 
     return importlib.import_module(package_name)
 

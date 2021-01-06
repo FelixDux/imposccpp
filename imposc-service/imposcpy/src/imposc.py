@@ -29,7 +29,9 @@ def marshall_arguments(action_function, args: dict):
 
     for name, parameter in sig.parameters.items():
         if name == "kwargs":
-            result.update(args)
+            validated, kwoutcome = actions.validate(args)
+            result.update(validated)
+            outcome.extend(kwoutcome)
         elif name not in args:
             # Not supplied - is there a default value?
             if parameter.default == Parameter.empty:
@@ -44,7 +46,7 @@ def marshall_arguments(action_function, args: dict):
                 else:
                     result[name] = args[name]
             except ValueError:
-                outcome.append(f"Parameter {name} was supplied with an invalid values {args[name]}")
+                outcome.append(f"Parameter {name} was supplied with an invalid value {args[name]}")
 
     return result, outcome
 
@@ -105,6 +107,9 @@ def do_action(action):
         else:
             # Pass to function
             outfile: Path = action_function(**marshalled_args)
+
+            if isinstance(outfile, str):
+                outfile = Path(outfile)
 
             if outfile.suffix == ".txt":
                 # There was an error

@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 from lib_errors import LibErrors
 from dataclasses import dataclass, asdict
-from typing import Tuple, List, Optional, Union
+from typing import Tuple, List, Optional, Union, Dict
 
 
 @dataclass
@@ -19,6 +19,21 @@ class ActionParameter:
 
     def toArg(self) -> Tuple[str, str]:
         return (self.name, self.type)
+
+    def validate(self, value: str) ->  Optional[Union[int, float, str]]:
+        result = None
+
+        try:
+            if self.type in ["float", "double"]:
+                result = float(value)
+            elif self.type in ["int", "uint"]:
+                result = int(value)
+            else:
+                result = value
+        except ValueError:
+            result = None
+
+        return result
 
 
 class ActionParameterCollection:
@@ -59,6 +74,12 @@ class ActionParameterCollection:
 
         return info
 
+    def validate(self, name: str, value: str) ->  Optional[Union[int, float, str]]:
+        if name in self._parameters:
+            return self._parameters[name].validate(value)
+        else:
+            return None
+
 
 class ActionCollection:
     def __init__(self):
@@ -84,6 +105,9 @@ class ActionCollection:
             result[action_name] = dict([("description", action[1]), ("label", action[2]), ("groups", self._parameters.action_info(names))])
 
         return result
+
+    def validate(self, name: str, value: str) ->  Optional[Union[int, float, str]]:
+        return self._parameters.validate(name, value)
   
 
 class ImposcActions:
@@ -96,6 +120,14 @@ class ImposcActions:
 
     def info(self) -> dict:
         return self._actions.info()
+
+    def validate(self, args: Dict[str,str]) -> Tuple[Dict[str, Optional[Union[int, float, str]]], List[str]]:
+        validated = dict(map(lambda pair: (pair[0], self._actions.validate(pair[0], pair[1])), args.items()))
+
+        outcome = list(map(lambda elem: f"Parameter {elem[0]} was supplied with an invalid value {args[elem[0]]}", filter(lambda pair: pair is None, validated.items())))
+
+        return validated, outcome
+
 
     def impacts(self, **kwargs) -> Path:
         errors = LibErrors()
