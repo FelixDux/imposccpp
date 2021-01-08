@@ -1,49 +1,36 @@
-# Build the C++ library
-
-FROM rikorose/gcc-cmake
+# Use buster rather than slim-buster because we need gcc
+FROM python:3.8-buster
 
 WORKDIR /usr/src/proj
 
 COPY . .
 
-# Build project with cmake
-RUN cd imposc-cpp && mkdir -p build && cd build && rm -rf * && cmake .. && cmake --build . && cmake --install .
-
-# Use buster rather than slim-buster because it has `nm` installed, which is used by `libwrapper.py`
-
-FROM python:3.8-buster
-
-WORKDIR /usr/src/proj
-
-# Copy python source
-COPY --from=0 /usr/src/proj/imposcpy /usr/src/proj/imposcpy
-
-# Copy C++ libraries
-COPY --from=0 /usr/src/proj/imposc-cpp/libs /usr/src/proj/imposc-cpp/libs
-# COPY --from=0 /usr/src/proj/imposc-cpp/build/imposcpy /usr/src/proj/imposc-cpp/build/imposcpy
-# COPY --from=0 /usr/src/proj/imposc-cpp/build/dynamics /usr/src/proj/imposc-cpp/build/dynamics
-# COPY --from=0 /usr/src/proj/imposc-cpp/build/charts /usr/src/proj/imposc-cpp/build/charts
+# Clear out any unwanted dev files from the copy
+RUN rm /usr/src/proj/imposcpy/src/*.so
 
 # Install Gnuplot (needed for charting)
 RUN apt-get update && apt-get install -y gnuplot
 
 # Install python dependencies
 
-RUN cd imposcpy && python -m pip install -r requirements.txt -r requirements-test.txt
+RUN cd imposcpy && python -m pip install -r requirements.txt
 
 # Python environment
 ENV PYTHONPATH=/usr/src/proj/imposcpy/src
 
 # Cython environment
-ENV LD_LIBRARY_PATH=/usr/src/proj/imposcpy/src
+# ENV LD_LIBRARY_PATH=/usr/src/proj/imposcpy/src:/usr/src/proj/imposc-cpp/libs:$LD_LIBRARY_PATH
+
+# Build cython package
+RUN cd /usr/src/proj/imposcpy/src && python setup.py build_ext --inplace
 
 # Flask environment
 
 EXPOSE 5000
 
 ENV FLASK_APP=/usr/src/proj/imposcpy/src/imposc.py
-ENV FLASK_ENV=development
-ENV FLASK_DEBUG=1
+# ENV FLASK_ENV=development
+# ENV FLASK_DEBUG=1
 
 # Launch flask service
 

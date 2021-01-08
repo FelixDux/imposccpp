@@ -1,5 +1,4 @@
-pillow
-flask
-flask-cors
-cython
-pybind11
+pillow==8.1.0
+flask==1.1.2
+flask-cors==3.0.10
+cython==0.29.21
