@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 from lib_errors import LibErrors
 from dataclasses import dataclass, asdict
-from typing import Tuple, List, Optional, Union
+from typing import Tuple, List, Optional, Union, Dict
 
 
 @dataclass
@@ -19,6 +19,21 @@ class ActionParameter:
 
     def toArg(self) -> Tuple[str, str]:
         return (self.name, self.type)
+
+    def validate(self, value: str) ->  Optional[Union[int, float, str]]:
+        result = None
+
+        try:
+            if self.type in ["float", "double"]:
+                result = float(value)
+            elif self.type in ["int", "uint"]:
+                result = int(value)
+            else:
+                result = value
+        except ValueError:
+            result = None
+
+        return result
 
 
 class ActionParameterCollection:
@@ -59,6 +74,12 @@ class ActionParameterCollection:
 
         return info
 
+    def validate(self, name: str, value: str) ->  Optional[Union[int, float, str]]:
+        if name in self._parameters:
+            return self._parameters[name].validate(value)
+        else:
+            return None
+
 
 class ActionCollection:
     def __init__(self):
@@ -74,7 +95,7 @@ class ActionCollection:
             names = action[0]
             args = self._parameters.args(names)
             args.extend([("outfile", "Path"), ("errorfile", "Path")])
-            lib.add_function(f"map_{action_name}", "bool", args)
+            lib.add_function(f"{action_name}", "bool", args)
 
     def info(self) -> dict:
         result = dict()
@@ -84,6 +105,9 @@ class ActionCollection:
             result[action_name] = dict([("description", action[1]), ("label", action[2]), ("groups", self._parameters.action_info(names))])
 
         return result
+
+    def validate(self, name: str, value: str) ->  Optional[Union[int, float, str]]:
+        return self._parameters.validate(name, value)
   
 
 class ImposcActions:
@@ -97,11 +121,19 @@ class ImposcActions:
     def info(self) -> dict:
         return self._actions.info()
 
+    def validate(self, args: Dict[str,str]) -> Tuple[Dict[str, Optional[Union[int, float, str]]], List[str]]:
+        validated = dict(map(lambda pair: (pair[0], self._actions.validate(pair[0], pair[1])), args.items()))
+
+        outcome = list(map(lambda elem: f"Parameter {elem[0]} was supplied with an invalid value {args[elem[0]]}", filter(lambda pair: pair is None, validated.items())))
+
+        return validated, outcome
+
+
     def impacts(self, **kwargs) -> Path:
         errors = LibErrors()
         try:
-            outfile = self._cache.offer_new_file()
-            if self._imposclib.impacts(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+            outfile = str(self._cache.offer_new_file())
+            if self._imposclib.impacts(outfile=outfile.encode('utf-8'), errorfile=errors.errorFile.encode('utf-8'), **kwargs):
                 return outfile
             else:
                 return errors.errorPath
@@ -112,8 +144,8 @@ class ImposcActions:
     def singularity_set(self, **kwargs) -> Path:
         errors = LibErrors()
         try:
-            outfile = self._cache.offer_new_file()
-            if self._imposclib.singularity_set(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+            outfile = str(self._cache.offer_new_file())
+            if self._imposclib.singularity_set(outfile=outfile.encode('utf-8'), errorfile=errors.errorFile.encode('utf-8'), **kwargs):
                 return outfile
             else:
                 return errors.errorPath
@@ -124,8 +156,8 @@ class ImposcActions:
     def doa(self, **kwargs) -> Path:
         errors = LibErrors()
         try:
-            outfile = self._cache.offer_new_file()
-            if self._imposclib.doa(outfile=outfile, errorfile=errors.errorFile, **kwargs):
+            outfile = str(self._cache.offer_new_file())
+            if self._imposclib.doa(outfile=outfile.encode('utf-8'), errorfile=errors.errorFile.encode('utf-8'), **kwargs):
                 return outfile
             else:
                 return errors.errorPath
@@ -135,6 +167,9 @@ class ImposcActions:
             
 
 def do_and_show(image_file):
+    if isinstance(image_file, str):
+        image_file = Path(image_file)
+
     if image_file.exists():
         if image_file.suffix == ".txt":
             print(image_file.read_text())

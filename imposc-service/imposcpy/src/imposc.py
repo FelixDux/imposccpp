@@ -6,12 +6,22 @@ from flask import Flask, request, make_response, send_file, render_template, jso
 from markupsafe import Markup
 from flask_cors import CORS
 import logging
+import sys
 
 app = Flask(__name__)
 CORS(app, resources=r'/*')
-logging.getLogger('flask_cors').level = logging.DEBUG
+
+# Set up logging
+sh = logging.StreamHandler(sys.stderr)
+formatter = logging.Formatter('[%(asctime)s] %(levelname)s [%(filename)s.%(funcName)s:%(lineno)d] %(message)s', datefmt='%a, %d %b %Y %H:%M:%S')
+sh.setFormatter(formatter)
+
+flask_logger = logging.getLogger('flask_cors')
+flask_logger.setLevel(logging.DEBUG)
 logger = logging.getLogger('Impact oscillator service')
-logger.level = logging.DEBUG
+logger.setLevel(logging.DEBUG)
+flask_logger.addHandler(sh)
+logger.addHandler(sh)
 
 actions = ImposcActions()
 
@@ -29,7 +39,9 @@ def marshall_arguments(action_function, args: dict):
 
     for name, parameter in sig.parameters.items():
         if name == "kwargs":
-            result.update(args)
+            validated, kwoutcome = actions.validate(args)
+            result.update(validated)
+            outcome.extend(kwoutcome)
         elif name not in args:
             # Not supplied - is there a default value?
             if parameter.default == Parameter.empty:
@@ -44,24 +56,30 @@ def marshall_arguments(action_function, args: dict):
                 else:
                     result[name] = args[name]
             except ValueError:
-                outcome.append(f"Parameter {name} was supplied with an invalid values {args[name]}")
+                outcome.append(f"Parameter {name} was supplied with an invalid value {args[name]}")
 
     return result, outcome
 
 @app.errorhandler(422)
 def bad_arguments(message: str):
+    logger.log(level=logging.ERROR, msg=message)
     return jsonify(error=str(message)), 422
 
 @app.errorhandler(400)
 def bad_request(message: str):
+    logger.log(level=logging.ERROR, msg=message)
     return jsonify(error=str(message)), 400
 
 @app.errorhandler(404)
 def bad_endpoint(message: str):
+    logger.log(level=logging.ERROR, msg=message)
     return jsonify(error=str(message)), 404
 
 @app.route('/')
 def index():
+    
+    logger.log(level=logging.DEBUG, msg=f"Info request received")
+
     return jsonify(actions.info())
 
 @app.route('/<action>', methods=['POST', 'GET'])
@@ -105,6 +123,9 @@ def do_action(action):
         else:
             # Pass to function
             outfile: Path = action_function(**marshalled_args)
+
+            if isinstance(outfile, str):
+                outfile = Path(outfile)
 
             if outfile.suffix == ".txt":
                 # There was an error

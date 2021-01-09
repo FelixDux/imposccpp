@@ -44,4 +44,11 @@ const OLD_ENV = process.env;
 
         expect(mockConfig.value('IMPOSC_PORT')).toEqual(process.env.REACT_APP_IMPOSC_PORT);
     });
+
+    test('Config value overrides correctly with environment variables for docker-compose', () => {
+        process.env.REACT_APP_IMPOSC_PORT = '';
+        process.env.REACT_APP_IMPOSC_URL = 'service';
+
+        expect(mockConfig.plotterURL()).toEqual(process.env.REACT_APP_IMPOSC_URL);
+    });
 }

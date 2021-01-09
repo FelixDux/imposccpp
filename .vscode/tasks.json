@@ -25,7 +25,7 @@
             "type": "shell",
             "label": "CMake build",
             "options": {
-                "cwd": "${workspaceRoot}/imposc-cpp/build"
+                "cwd": "${workspaceRoot}/imposc-service/imposc-cpp/build"
             },
             "args": [
                 "cmake --build ."

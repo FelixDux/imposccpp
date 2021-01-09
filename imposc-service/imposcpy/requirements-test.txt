@@ -1,0 +1,3 @@
+pytest==6.2.1
+python-dotenv==0.15.0
+pyfakefs==4.3.3 # http://pyfakefs.org/

@@ -1,0 +1,12 @@
+# Purely used for building and unit testing the C++ library
+
+FROM rikorose/gcc-cmake
+
+WORKDIR /usr/src/proj
+
+COPY . .
+
+# Build project with cmake
+RUN mkdir -p build && cd build && rm -rf * && cmake .. && cmake --build . 
+
+CMD ["./build/imposc"]

@@ -404,7 +404,7 @@ class PlotterInput extends React.Component {
           return (
             <ActionSelector 
             action={actionName}
-            active={this.state.action == actionName}
+            active={this.state.action === actionName}
             description={actionInfo.description}
             label={actionInfo.label}
             onClick={this.handleActionChange}

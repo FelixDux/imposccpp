@@ -1,0 +1,13 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t happyleader/imposc-ui -f ./imposc-ui/Dockerfile.dev ./imposc-ui
+  - docker build -t happyleader/imposc-cpp -f ./imposc-service/imposc-cpp/Dockerfile.dev ./imposc-service/imposc-cpp
+  - docker build -t happyleader/imposc-service -f ./imposc-service/Dockerfile.dev ./imposc-service
+
+script:
+  - docker run -e CI=true happyleader/imposc-ui npm run test -- --coverage
+  - docker run -e CI=true happyleader/imposc-cpp ./build/test/Test
