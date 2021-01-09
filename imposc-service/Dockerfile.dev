@@ -12,26 +12,17 @@ RUN rm /usr/src/proj/imposcpy/src/*.so
 RUN apt-get update && apt-get install -y gnuplot
 
 # Install python dependencies
-
 RUN cd imposcpy && python -m pip install -r requirements.txt
 
 # Python environment
 ENV PYTHONPATH=/usr/src/proj/imposcpy/src
 
-# Cython environment
-# ENV LD_LIBRARY_PATH=/usr/src/proj/imposcpy/src:/usr/src/proj/imposc-cpp/libs:$LD_LIBRARY_PATH
-
 # Build cython package
 RUN cd /usr/src/proj/imposcpy/src && python setup.py build_ext --inplace
 
 # Flask environment
-
-EXPOSE 5000
-
 ENV FLASK_APP=/usr/src/proj/imposcpy/src/imposc.py
-# ENV FLASK_ENV=development
-# ENV FLASK_DEBUG=1
 
-# Launch flask service
-
-CMD ["python", "-m", "flask", "run"]
+# Launch service
+EXPOSE 5000
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "imposc:app"]
