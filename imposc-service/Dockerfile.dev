@@ -6,7 +6,7 @@ WORKDIR /usr/src/proj
 COPY . .
 
 # Clear out any unwanted dev files from the copy
-RUN rm /usr/src/proj/imposcpy/src/*.so
+RUN rm -f /usr/src/proj/imposcpy/src/*.so
 
 # Install Gnuplot (needed for charting)
 RUN apt-get update && apt-get install -y gnuplot
