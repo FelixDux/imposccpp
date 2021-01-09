@@ -43,7 +43,13 @@ class Config {
      * @public
      */
     plotterURL() {
-        return this.value('IMPOSC_URL') + ':' + this.value('IMPOSC_PORT');
+        if (this.value('IMPOSC_PORT') === '') {
+            return this.value('IMPOSC_URL');
+        }
+        else {
+            return this.value('IMPOSC_URL') + ':' + this.value('IMPOSC_PORT');
+        }
+        
     }
 };
 
