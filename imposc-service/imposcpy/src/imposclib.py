@@ -29,7 +29,8 @@ if __name__ == "__main__":
 
     print(dir(imposc_library))
 
-    if imposc_library.impacts(omega=2.8,r= 0.8, sigma=0, max_periods=100, phi=0.5, v=0.5, num_impacts=1000, outfile=outfile, errorfile=errorfile):
+    # if imposc_library.impacts(omega=2.8,r= 0.8, sigma=0, max_periods=100, phi=0.5, v=0.5, num_impacts=1000, outfile=outfile, errorfile=errorfile):
+    if imposc_library.doa(omega=5.2,r= 0.8, sigma=-0.63, max_periods=100, max_velocity=4, n_v_increments = 100, n_phi_increments=100, n_iterations=1000, outfile=outfile, logfile=errorfile):
         from PIL import Image
         im = Image.open(outfile)
         im.show()

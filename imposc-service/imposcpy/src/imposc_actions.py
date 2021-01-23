@@ -54,6 +54,7 @@ class ActionParameterCollection:
         self.add(ActionParameter(group="Options", name = 'n_phi_increments', description = 'Number of phase increments for DOA plot', range = 'positive', type = 'uint', label = 'Nφ', defaultValue=200))
         self.add(ActionParameter(group="Options", name = 'n_v_increments', description = 'Number of velocity increments for DOA plot', range = 'positive', type = 'uint', label = 'Nv', defaultValue=200))
         self.add(ActionParameter(group="Options", name = 'max_velocity', description = 'Maximum velocity for DOA plot', range = 'non-negative', type = 'double', label = 'vmax', defaultValue=4.0))
+        self.add(ActionParameter(group="Options", name = 'n_iterations', description = 'Number of impacts to detect orbit in DOA plot', range = 'positive', type = 'uint', label = 'Ni', defaultValue=500))
 
     def add(self, parameter: ActionParameter) -> None:
         self._parameters[parameter.name] = parameter
@@ -87,7 +88,7 @@ class ActionCollection:
         self._actions = dict([
             ('impacts', (["omega", "r", "sigma", "max_periods", "phi", "v", "num_impacts"], "Scatter plot on the impact surface", "Scatter")),
             ('singularity_set', (["omega", "r", "sigma", "max_periods", "num_points"], "Plot points on the impact surface which map to zero-velocity impacts", "Singularity set")),
-            ('doa', (["omega", "r", "sigma", "max_periods", "max_velocity", "n_v_increments", "n_phi_increments"], "Domain of attraction plot on the impact surface", "DOA plot"))
+            ('doa', (["omega", "r", "sigma", "max_periods", "max_velocity", "n_v_increments", "n_phi_increments", "n_iterations"], "Domain of attraction plot on the impact surface", "DOA plot"))
         ])
 
     def add_functions(self, lib: ImposcIF) -> None:
@@ -176,6 +177,10 @@ def do_and_show(image_file):
         else:
             Image.open(image_file).show()
         
+def alias_args(args: dict, alias_to: str, alias_from: str="num_impacts") -> dict:
+    aliaser = lambda arg_kv : (alias_to, arg_kv[1]) if arg_kv[0]==alias_from else arg_kv
+    
+    return dict(map(aliaser, args.items()))
 
 if __name__ == "__main__":
     import argparse
@@ -197,12 +202,14 @@ if __name__ == "__main__":
 
     actions = ImposcActions()
 
-    if args.pop('plot') == "impacts":
+    plot = args.pop('plot')
+
+    if plot == "impacts":
         do_and_show(actions.impacts(**args))
 
-    elif args.pop('plot') == "singularity-set":
-        do_and_show(actions.singularity_set(**args))
+    elif plot == "singularity-set":
+        do_and_show(actions.singularity_set(**alias_args(args, alias_to="num_points")))
 
-    elif args.pop('plot') == "doa":
-        do_and_show(actions.doa(**args))
+    elif plot == "doa":
+        do_and_show(actions.doa(**alias_args(args, alias_to="n_iterations")))
 
