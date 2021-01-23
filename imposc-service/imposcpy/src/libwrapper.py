@@ -1,8 +1,6 @@
 from pathlib import Path
-from typing import get_type_hints, Dict, List, Tuple
+from typing import Dict, List, Tuple
 import importlib
-from os import getcwd, environ, getenv
-from shutil import move, copy
 from subprocess import run
 
 
@@ -20,7 +18,7 @@ def build_wrapper(package_name: str, library_name: str, library_dir: Path, heade
         package_pyx_file = package_module.with_suffix(".pyx")
 
         setup_command = "python setup.py build_ext --inplace"
-        run([t for t in setup_command.split(' ') if t])
+        run([t for t in setup_command.split(' ') if t], cwd=this_dir)
 
     return importlib.import_module(package_name)
 
