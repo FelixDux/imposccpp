@@ -197,12 +197,25 @@ namespace charts
 
 		for (const auto &orbit : doa_data)
 		{
-			commands.push_back(prepare_plot(orbit.second, orbit.first, "dots"));
+			commands.push_back(prepare_plot(orbit.second, orbit.first, "points pointtype 5 pointsize 1"));
 
 			std::cout << orbit.first << std::endl;
 		}
 
-		do_plot(commands, outfile);
+		int mult = 10;
+		float aspect_ratio = 0.75;
+		int sizeX = 0;
+
+		if (n_phi_increments > n_v_increments)
+		{
+			sizeX = mult*n_phi_increments;
+		}
+		else
+		{
+			sizeX = mult*n_v_increments;
+		}
+
+		do_plot(commands, outfile, true, sizeX, sizeX*aspect_ratio);
 
 	}
 }

@@ -9,6 +9,6 @@ namespace charts
 
 	void plot_impacts(const std::vector<Impact> &impacts, const std::string &outfile)
 	{ 
-		do_plot( {prepare_plot(impacts, "impact map", "dots")}, outfile);
+		do_plot( {prepare_plot(impacts, "", "dots")}, outfile);
 	}
 }

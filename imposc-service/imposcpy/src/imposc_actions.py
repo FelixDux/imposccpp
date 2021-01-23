@@ -49,7 +49,7 @@ class ActionParameterCollection:
         self.add(ActionParameter(group="Initial", name = 'v', description = 'Velocity', range = 'non-negative', type = 'double', label = 'v', defaultValue=0))
     
         self.add(ActionParameter(group="Options", name = 'max_periods', description = 'Max forcing periods between impacts', range = 'positive', type = 'uint', label = 'P', defaultValue=100))
-        self.add(ActionParameter(group="Options", name = 'num_impacts', description = 'Number of impacts to plot', range = 'positive-big', type = 'uint', label = 'N', defaultValue=5000))
+        self.add(ActionParameter(group="Options", name = 'num_impacts', description = 'Number of impacts to plot', range = 'positive-big', type = 'uint', label = 'N', defaultValue=20000))
         self.add(ActionParameter(group="Options", name = 'num_points', description = 'Number points along singularity set', range = 'positive-big', type = 'uint', label = 'M', defaultValue=5000))
         self.add(ActionParameter(group="Options", name = 'n_phi_increments', description = 'Number of phase increments for DOA plot', range = 'positive-big', type = 'uint', label = 'Nφ', defaultValue=200))
         self.add(ActionParameter(group="Options", name = 'n_v_increments', description = 'Number of velocity increments for DOA plot', range = 'positive-big', type = 'uint', label = 'Nv', defaultValue=200))

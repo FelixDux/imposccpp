@@ -18,9 +18,16 @@ namespace fs = std::filesystem;
 
 namespace charts
 {
-	inline std::string gnuplot_prefix(const std::string &outfile)
+	inline std::string gnuplot_prefix(const std::string &outfile, bool withKey=false, int sizeX=1000, int sizeY=750)
 	{
-		return "gnuplot -e \"set terminal png size 400,300; set output '" + outfile + "'; set key below box; set yrange [0:]; set xrange [0 : 1]; set xtics ('0' 0, '{/Symbol p}/{/Symbol w}' 0.5, '2{/Symbol p}/{/Symbol w}' 1) ; set xlabel '{/Symbol f}'; set ylabel 'v'; ";
+		std::string result = "gnuplot -e \"set terminal png size " + std::to_string(sizeX) + "," + std::to_string(sizeY) + "; set output '" + outfile + "'; set yrange [0:]; set xrange [0 : 1]; set xtics ('0' 0, '{/Symbol p}/{/Symbol w}' 0.5, '2{/Symbol p}/{/Symbol w}' 1) ; set xlabel '{/Symbol f}'; set ylabel 'v'; ";
+
+		if (withKey)
+		{
+			result += " set key below box;";
+		}		
+
+		return result;
 	};
 
 	inline std::pair<std::ofstream, std::string> temp_file_stream()
@@ -54,10 +61,10 @@ namespace charts
 	}
 
 
-	inline int do_plot(const std::vector<std::string> &commands, const std::string &outfile)
+	inline int do_plot(const std::vector<std::string> &commands, const std::string &outfile, bool withKey=false, int sizeX=1000, int sizeY=750)
 	{
 		std::stringstream command;
-		command << gnuplot_prefix(outfile);
+		command << gnuplot_prefix(outfile, withKey, sizeX, sizeY);
 
 		bool first = true;
 
