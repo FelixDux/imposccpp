@@ -215,7 +215,7 @@ namespace charts
 			sizeX = mult*n_v_increments;
 		}
 
-		do_plot(commands, outfile, true, sizeX, sizeX*aspect_ratio);
+		do_plot(commands, outfile, parameters, true, sizeX, sizeX*aspect_ratio);
 
 	}
 }

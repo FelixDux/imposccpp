@@ -15,17 +15,30 @@
 namespace fs = std::filesystem;
 
 #include "impact.hpp"
+#include "dynamics.hpp"
+
+using namespace dynamics;
 
 namespace charts
 {
-	inline std::string gnuplot_prefix(const std::string &outfile, bool withKey=false, int sizeX=1000, int sizeY=750)
+	inline std::string gnuplot_prefix(const std::string &outfile, const Parameters &params, bool withKey=false, int sizeX=1000, int sizeY=750)
 	{
-		std::string result = "gnuplot -e \"set terminal png size " + std::to_string(sizeX) + "," + std::to_string(sizeY) + "; set output '" + outfile + "'; set yrange [0:]; set xrange [0 : 1]; set xtics ('0' 0, '{/Symbol p}/{/Symbol w}' 0.5, '2{/Symbol p}/{/Symbol w}' 1) ; set xlabel '{/Symbol f}'; set ylabel 'v'; ";
+		std::string result = "gnuplot -e \"set terminal png size " + std::to_string(sizeX) + "," + std::to_string(sizeY) + 
+		"; set output '" + outfile + 
+		"'; set yrange [0:]; set xrange [0 : 1]; set xtics ('0' 0, '{/Symbol p}/{/Symbol w}' 0.5, '2{/Symbol p}/{/Symbol w}' 1) ; set xlabel '{/Symbol f}'; set ylabel 'v'; ";
 
 		if (withKey)
 		{
 			result += " set key below box;";
-		}		
+		}
+
+		result += " set title '";
+
+		result += "{/Symbol w}=" + std::to_string(params.get_forcing_frequency());
+		result += ", {/Symbol s}=" + std::to_string(params.get_obstacle_offset());
+		result += ", r=" + std::to_string(params.get_coefficient_of_restitution());
+
+		result += "';";
 
 		return result;
 	};
@@ -61,10 +74,10 @@ namespace charts
 	}
 
 
-	inline int do_plot(const std::vector<std::string> &commands, const std::string &outfile, bool withKey=false, int sizeX=1000, int sizeY=750)
+	inline int do_plot(const std::vector<std::string> &commands, const std::string &outfile, const Parameters &params, bool withKey=false, int sizeX=1000, int sizeY=750)
 	{
 		std::stringstream command;
-		command << gnuplot_prefix(outfile, withKey, sizeX, sizeY);
+		command << gnuplot_prefix(outfile, params, withKey, sizeX, sizeY);
 
 		bool first = true;
 
