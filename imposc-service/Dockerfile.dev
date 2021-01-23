@@ -25,4 +25,4 @@ ENV FLASK_APP=/usr/src/proj/imposcpy/src/imposc.py
 
 # Launch service
 EXPOSE 5000
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "imposc:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--timeout", "180", "imposc:app"]
