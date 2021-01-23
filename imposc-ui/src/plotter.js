@@ -26,13 +26,18 @@ class PlotterInput extends React.Component {
     }
 
     render() {
-      const step = (this.props.type === 'integer' || this.props.type === 'uint') ? 1 : 0.01;
+      var step = (this.props.type === 'integer' || this.props.type === 'uint') ? 1 : 0.01;
       let min = '';
       let max = '';
   
       // Interpret the range
       switch (this.props.range)
       {
+        case 'positive-big': {
+          step = 10;
+          min = step;
+          break;
+        }
         case 'non-negative': {
           min = 0;
           break;
@@ -293,7 +298,7 @@ class PlotterInput extends React.Component {
           {groups}
         <input type={submitType} value="Show" />
         </form></div>      
-        <div className="column right" ><img src={this.state.src} alt={this.state.result} width="80%" align="center" /></div>
+        <div className="column right" ><img src={this.state.src} alt={this.state.result} width="60%" align="center" /></div>
         </div>
       )
     }

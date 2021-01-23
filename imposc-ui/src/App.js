@@ -22,10 +22,7 @@ function App() {
 
 export default App;
 
-// TODO: Dockerise
-// TODO: set up travis CI using docker for tests
 // TODO: tidy up plotting legends etc
-// TODO: add page on mathematical background
 // TODO: Orchestrate with K8s?
 // TODO: Pull Elixir project into same structure
 // TODO: create alternate imposc services in Rust, Golang, Haskell, Java

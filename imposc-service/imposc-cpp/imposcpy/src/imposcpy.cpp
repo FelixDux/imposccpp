@@ -35,7 +35,7 @@ unsigned char map_impacts(Frequency omega, Scalar r, Displacement sigma, unsigne
         
         ImpactMap map(parameters);
         
-        plot_impacts(map.iterate(phi, v, num_iterations).impacts, outfile);
+        plot_impacts(map.iterate(phi, v, num_iterations).impacts, outfile, parameters);
 	}
 	catch (const dynamics::ParameterError &e)
 	{
@@ -58,7 +58,7 @@ unsigned char map_singularity_set(Frequency omega, Scalar r, Displacement sigma,
         
         ImpactMap map(parameters);
         
-        plot_impacts(map.singularity_set(num_points), outfile);
+        plot_impacts(map.singularity_set(num_points), outfile, parameters);
 	}
 	catch (const dynamics::ParameterError &e)
 	{

@@ -12,7 +12,7 @@ RUN rm -f /usr/src/proj/imposcpy/src/*.so
 RUN apt-get update && apt-get install -y gnuplot
 
 # Install python dependencies
-RUN cd imposcpy && python -m pip install -r requirements.txt
+RUN cd imposcpy && python -m pip install -r requirements.txt -r requirements-test.txt
 
 # Python environment
 ENV PYTHONPATH=/usr/src/proj/imposcpy/src
