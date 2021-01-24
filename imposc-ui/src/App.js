@@ -22,7 +22,6 @@ function App() {
 
 export default App;
 
-// TODO: tidy up plotting legends etc
 // TODO: Orchestrate with K8s?
 // TODO: Pull Elixir project into same structure
 // TODO: create alternate imposc services in Rust, Golang, Haskell, Java
