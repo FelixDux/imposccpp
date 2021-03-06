@@ -1,0 +1,8 @@
+{
+    "name": "imposcpp",
+    "description": "Analysis and simulation of a simple vibro-impact model developed in C++ with a Python wrapper using Cython and Flask and a ReactJS SPA user interface - principally as a learning exercise",
+    "repository": "https://github.com/FelixDux/imposccpp",
+    "logo": "",
+    "keywords": ["react", "docker", "cython"],
+    "stack": "container"
+  }
