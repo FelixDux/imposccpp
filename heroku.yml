@@ -1,8 +1,8 @@
 setup:
   config:
-    REACT_APP_IMPOSC_URL: localhost
-    REACT_APP_IMPOSC_PORT: 5000
+    REACT_APP_IMPOSC_URL: api
+    REACT_APP_IMPOSC_PORT: 
 build:
   docker:
-    service: ./imposc-service/Dockerfile
-    ui: ./imposc-ui/Dockerfile
+    api: ./imposc-service/Dockerfile
+    web: ./imposc-ui/Dockerfile
