@@ -1,7 +1,7 @@
-# setup:
-#   config:
-#     REACT_APP_IMPOSC_URL: 
-#     REACT_APP_IMPOSC_PORT: 5000
+setup:
+  config:
+    REACT_APP_IMPOSC_URL: localhost
+    REACT_APP_IMPOSC_PORT: 5000
 build:
   docker:
     service: ./imposc-service/Dockerfile
