@@ -11,7 +11,7 @@ services:
     stdin_open: true
     build:
       context: ./imposc-ui
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     volumes:

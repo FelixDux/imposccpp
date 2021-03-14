@@ -1,0 +1,31 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "api",
+            "image": "happyleader/imposc-service",
+            "hostname": "api",
+            "essential": false,
+            "portMappings": [
+                {
+                    "hostPort": 5000,
+                    "containerPort": 5000
+                }
+            ],
+            "memory": 128
+        },
+        {
+            "name": "web",
+            "image": "happyleader/imposc-ui",
+            "essential": true,
+            "portMappings": [
+                {
+                    "hostPort": 3000,
+                    "containerPort": 3000
+                }
+            ],
+            "memory": 128,
+            "links": ["api"]
+        }
+    ]
+}

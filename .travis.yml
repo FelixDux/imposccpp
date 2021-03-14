@@ -11,3 +11,22 @@ before_install:
 script:
   - docker run -e CI=true happyleader/imposc-ui npm run test -- --coverage
   - docker run -e CI=true happyleader/imposc-cpp ./build/test/Test
+
+after_success:
+    - docker build -t happyleader/imposc-service ./imposc-service
+    - docker build -t happyleader/imposc-ui ./imposc-ui
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push happyleader/imposc-service
+    - docker push happyleader/imposc-ui
+
+deploy:
+    provider: elasticbeanstalk
+    region: "eu-west-2"
+    app: "impact-oscillator"
+    env: "Impactoscillator-env"
+    bucket-name: "elasticbeanstalk-eu-west-2-500699635973"
+    bucket-path: "impact-oscillator"
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
