@@ -20,7 +20,6 @@ services:
     environment:
       - REACT_APP_IMPOSC_URL=http://0.0.0.0
       - REACT_APP_IMPOSC_PORT=5000
-      - PORT=3000
     depends_on:
       - service
   test-ui:

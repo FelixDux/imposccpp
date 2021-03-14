@@ -1,8 +1,0 @@
-setup:
-  config:
-    REACT_APP_IMPOSC_URL: api
-    REACT_APP_IMPOSC_PORT: 
-build:
-  docker:
-    api: ./imposc-service/Dockerfile
-    web: ./imposc-ui/Dockerfile
