@@ -3,14 +3,14 @@
     "containerDefinitions": [
         {
             "name": "api",
-            "image": "happyleader/imposc-service",
+            "image": "happyleader/imposc-service:latest",
             "hostname": "api",
             "essential": false,
             "memory": 128
         },
         {
             "name": "web",
-            "image": "happyleader/imposc-ui",
+            "image": "happyleader/imposc-ui:latest",
             "essential": true,
             "portMappings": [
                 {
