@@ -11,6 +11,9 @@
             "type": "node-terminal",
             "cwd": "${workspaceFolder}/imposc-ui",
             "autoAttachChildProcesses": true,
+            "env": {
+                "REACT_APP_IMPOSC_URL": "http://127.0.0.1"
+            }
         },
         {
             "name": "Python: Flask",

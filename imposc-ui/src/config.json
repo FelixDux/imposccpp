@@ -1,4 +1,4 @@
 {
-    "IMPOSC_URL": "http://127.0.0.1",
+    "IMPOSC_URL": "service",
     "IMPOSC_PORT": "5000"
 }
