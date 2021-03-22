@@ -23,7 +23,7 @@ deploy:
     provider: elasticbeanstalk
     region: "eu-west-2"
     app: "impact-oscillator"
-    env: "Impactoscillator-env-1"
+    env: "Impactoscillator-env"
     bucket-name: "elasticbeanstalk-eu-west-2-500699635973"
     bucket-path: "impact-oscillator"
     on:
