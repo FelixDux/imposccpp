@@ -98,7 +98,7 @@ The corresponding project structure is as follows:
 
 If you have docker installed and are running in a bash environment, the simplest way to get started is to run `docker-compose up`. Alternatively you can run the development docker containers with `docker-compose -f docker-compose-dev.yml up`. Either way you can then access the front-end at http://localhost:80.
 
-If you prefer not to use docker, then you will need the following installed:
+If you prefer not to use docker, then you will need the following installed (NOTE: **the following instructions have only been successfully tested on Ubuntu**):
 
 - [Python](https://www.python.org/) 3.8 or above
 - A C++ compiler compatible with Cython, which in practice means gcc - see the [Cython docs](https://cython.readthedocs.io/en/latest/index.html)
@@ -114,7 +114,12 @@ python3 -m venv .venv
 source ./venv/bin/activate
 python -m pip install -r requirements.txt
 # python -m pip install -r requirements-test.txt if you want to run tests
-cd -
+
+# Create the Cython bindings
+cd src && python setup.py build_ext --inplace
+
+# And launch the flask service 
+FLASK_APP=imposc python -m imposc
 ```
 
 The first time the service is launched it will build the bindings to the C++ library.
