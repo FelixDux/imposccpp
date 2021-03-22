@@ -129,5 +129,5 @@ Then initialise and launch the front-end:
 ```bash
 cd ./imposc-ui
 npm install
-npm run start
+REACT_APP_IMPOSC_URL="http://127.0.0.1" npm run start
 ```
