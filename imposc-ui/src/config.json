@@ -1,4 +1,5 @@
 {
     "IMPOSC_URL": "http://0.0.0.0",
-    "IMPOSC_PORT": "5000"
+    "IMPOSC_PORT": "5000",
+    "MORE_INFO_LINK": "https://github.com/FelixDux/imposccpp"
 }

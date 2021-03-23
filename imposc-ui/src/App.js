@@ -12,6 +12,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Impact Oscillator</h1>
+        <small>(For background information click <a className="App-link" target="_blank" href={config.infoURL()}>here</a>)</small>
       </header>
       <PlotterApp 
         url = {config.plotterURL()}
