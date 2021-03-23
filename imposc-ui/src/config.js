@@ -30,7 +30,7 @@ class Config {
     
         // Override from environment variable
         const envKey = "REACT_APP_" + key;
-        if (envKey in process.env) {
+        if (envKey in process.env && process.env[envKey] != '') {
             result = process.env[envKey];
         }
     
@@ -59,6 +59,16 @@ class Config {
      */
     infoURL() {
         return this.value('MORE_INFO_LINK');
+    }
+
+    env() {
+        return Object.entries(process.env).map(
+            ([key, value]) => {
+                return (
+                    <p>{key+"='"+value+"'"}</p>
+                );
+            }
+        );
     }
 };
 
