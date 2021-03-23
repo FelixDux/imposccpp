@@ -46,9 +46,9 @@ const OLD_ENV = process.env;
     });
 
     test('Config value overrides correctly with environment variables for docker-compose', () => {
-        process.env.REACT_APP_IMPOSC_PORT = '';
+        process.env.REACT_APP_IMPOSC_PORT = '1234';
         process.env.REACT_APP_IMPOSC_URL = 'service';
 
-        expect(mockConfig.plotterURL()).toEqual(process.env.REACT_APP_IMPOSC_URL);
+        expect(mockConfig.plotterURL()).toEqual(process.env.REACT_APP_IMPOSC_URL+':'+process.env.REACT_APP_IMPOSC_PORT);
     });
 }
