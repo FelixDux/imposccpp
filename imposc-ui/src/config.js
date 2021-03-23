@@ -51,6 +51,15 @@ class Config {
         }
         
     }
+
+    /**
+     * @returns the URL for a page with background info about what the app does
+     * 
+     * @public
+     */
+    infoURL() {
+        return this.value('MORE_INFO_LINK');
+    }
 };
 
 export default Config
