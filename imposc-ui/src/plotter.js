@@ -421,7 +421,7 @@ class PlotterInput extends React.Component {
       return (
         <div>
           <div className="topnav">
-            {actionLinks}
+            {actionLinks.length > 0 ? actionLinks : this.props.url}
           </div>
           <PlotterForm
           url={actionUrl}
