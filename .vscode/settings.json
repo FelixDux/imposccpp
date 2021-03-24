@@ -76,5 +76,6 @@
     "python.linting.enabled": true,
     "python.analysis.extraPaths": [
         "${workspaceFolder}/imposc-service/imposcpy/src"
-    ]
+    ],
+    "python.pythonPath": "${workspaceFolder}/imposc-service/imposcpy/.venv/bin/python3"
 }

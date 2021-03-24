@@ -28,5 +28,3 @@ services:
     links:
       - service
     mem_limit: 256m
-    env_file:
-      - .env
