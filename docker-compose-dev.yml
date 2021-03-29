@@ -13,8 +13,8 @@ services:
       context: ./imposc-ui
       dockerfile: Dockerfile
       args:
-        - REACT_APP_IMPOSC_URL= ${REACT_APP_IMPOSC_URL}
-        - REACT_APP_IMPOSC_PORT= ${REACT_APP_IMPOSC_PORT}
+        - REACT_APP_IMPOSC_URL=${REACT_APP_IMPOSC_URL}
+        - REACT_APP_IMPOSC_PORT=${REACT_APP_IMPOSC_PORT}
     ports:
       - 80:80
     volumes:
