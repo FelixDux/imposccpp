@@ -62,7 +62,8 @@
         "stdexcept": "cpp",
         "typeinfo": "cpp",
         "codecvt": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "__locale": "cpp"
     },
     "cmake.sourceDirectory": "${workspaceFolder}/imposc-service/imposc-cpp",
     "python.linting.pylintPath": "${workspaceFolder}/imposc-service/imposcpy/.venv/bin/pylint",

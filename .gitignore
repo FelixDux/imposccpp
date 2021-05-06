@@ -24,3 +24,4 @@ imposc-service/imposcpy/src/home
 *.so
 *.a
 *.o
+node_modules/**
