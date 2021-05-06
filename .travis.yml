@@ -19,14 +19,30 @@ after_success:
     - docker push happyleader/imposc-service
     - docker push happyleader/imposc-ui
 
-deploy:
-    provider: elasticbeanstalk
-    region: "eu-west-2"
-    app: "impact-oscillator"
-    env: "Impactoscillator-env"
-    bucket-name: "elasticbeanstalk-eu-west-2-500699635973"
-    bucket-path: "impact-oscillator"
-    on:
-        branch: master
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
+# deploy:
+#     provider: elasticbeanstalk
+#     region: "eu-west-2"
+#     app: "impact-oscillator"
+#     env: "Impactoscillator-env"
+#     bucket-name: "elasticbeanstalk-eu-west-2-500699635973"
+#     bucket-path: "impact-oscillator"
+#     on:
+#         branch: master
+#     access_key_id: $AWS_ACCESS_KEY
+#     secret_access_key: $AWS_SECRET_KEY
+
+
+# # deploy:
+#     provider: lambda
+#     function_name: imposcpy # Name of the Lambda being created or updated
+#     edge: true # opt in to dpl v2
+#     on:
+#         branch: master
+#     access_key_id: $AWS_ACCESS_KEY
+#     secret_access_key: $AWS_SECRET_KEY
+#     memory_size: 512 # default is 128
+#     runtime: python3.8
+#     zip: ./imposc-service/imposcpy
+#     region: eu-west-2
+#     role: "$IMPOSCPY_IAM_ROLE"
+#     module_name: imposc
