@@ -23,7 +23,7 @@ jobs:
     - name: Test Cpp image
       run: docker run -e CI=true happyleader/imposc-cpp ./build/test/Test
     - name: Test Service image
-      run: docker run -e CI=true happyleader/imposc-service python -m pytest
+      run: docker run -e CI=true happyleader/imposc-service python -m pip install pytest && python -m pytest
 
     - name: Log into DockerHub
       if: github.event_name != 'pull_request'
