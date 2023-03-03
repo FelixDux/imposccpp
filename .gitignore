@@ -25,3 +25,4 @@ imposc-service/imposcpy/src/home
 *.a
 *.o
 node_modules/**
+imposc-service/imposcpy/requirements.out

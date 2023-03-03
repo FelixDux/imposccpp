@@ -116,10 +116,10 @@ python -m pip install -r requirements.txt
 # python -m pip install -r requirements-test.txt if you want to run tests
 
 # Create the Cython bindings
-cd src && python setup.py build_ext --inplace
+cd src && python3 setup.py build_ext --inplace
 
 # And launch the flask service 
-FLASK_APP=imposc python -m imposc
+FLASK_APP=imposc python3 -m imposc
 ```
 
 The first time the service is launched it will build the bindings to the C++ library.

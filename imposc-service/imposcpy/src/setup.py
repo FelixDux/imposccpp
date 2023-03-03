@@ -5,7 +5,32 @@ from distutils.extension import Extension
 from sysconfig import get_paths 
 from Cython.Build import cythonize
 from pathlib import Path
-from subprocess import run
+from subprocess import run, Popen, PIPE
+from os import environ
+
+# We need to make sure we use gcc, not clang - on a make gcc is just and alias for clang
+def get_gcc(start_version):
+    if start_version <= 0:
+        return
+
+    gcc = [f"gcc-{start_version}", f"g++-{start_version}"]
+    cc = ["CC","CXX"]
+
+    do_shell = lambda x: Popen(["which", x], stdout=PIPE, stderr=PIPE).communicate()[0].decode("utf-8")
+
+    def setenv(c, g):
+        environ[c] = g
+    
+    gs = list(map(do_shell, gcc))
+
+    if (all(gs)):
+        for c, g in zip(cc, gs):
+            setenv(c, g)
+    else:
+        get_gcc(start_version-1)
+    
+
+get_gcc(12)
 
 libs_path = Path(__file__).absolute().parent.parent.parent / "imposc-cpp/libs"
 libs_path_str = str(libs_path)
