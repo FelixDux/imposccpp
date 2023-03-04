@@ -30,7 +30,7 @@ class Config {
     
         // Override from environment variable
         const envKey = "REACT_APP_" + key;
-        if (envKey in process.env && process.env[envKey] != '') {
+        if (envKey in process.env && process.env[envKey] !== '') {
             result = process.env[envKey];
         }
     
