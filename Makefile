@@ -71,7 +71,7 @@ clean: clean-venv clean-img clean-build clean-test clean-out clean-pycache  ## D
 
 .PHONY: cython
 cython:  $(REQUIREMENTS).out
-	cd $(PYTHONPATH) $(PYTHON) $(PYTHONPATH)/setup.py build_ext --inplace  
+	cd $(PYTHONPATH) && $(PYTHON) $(PYTHONPATH)/setup.py build_ext --inplace  
 
 .PHONY: service
 service: cython
