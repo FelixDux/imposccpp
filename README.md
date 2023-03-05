@@ -96,7 +96,7 @@ The corresponding project structure is as follows:
 
 ## Installing and Running
 
-If you have docker installed and are running in a bash environment, the simplest way to get started is to run `docker-compose up`. Alternatively you can run the development docker containers with `docker-compose -f docker-compose-dev.yml up`. Either way you can then access the front-end at http://localhost:80.
+If you have docker installed and are running in a `bash` or `zsh` environment, the simplest way to get started is to run `docker-compose up`. Alternatively you can run the development docker containers with `docker-compose -f docker-compose-dev.yml up`. Either way you can then access the front-end at http://localhost:80.
 
 If you prefer not to use docker, then you will need the following installed (NOTE: **the following instructions have only been successfully tested on Ubuntu and MacOS**):
 
@@ -105,21 +105,12 @@ If you prefer not to use docker, then you will need the following installed (NOT
 - [CMake](https://cmake.org/) (if you want to test the C++ library yourself - it is not needed for the Cython binding)
 - [Gnuplot](http://www.gnuplot.info/)
 - [React](https://reactjs.org/)
+- `make`
 
-To get going, create a Python virtual environment inside the Python project:
+To create a Python virtual environment inside the Python project and launch the flask service
 
 ```bash
-cd ./imposc-service/imposcpy
-python3 -m venv .venv
-source ./venv/bin/activate
-python -m pip install -r requirements.txt
-# python -m pip install -r requirements-test.txt if you want to run tests
-
-# Create the Cython bindings
-cd src && python3 setup.py build_ext --inplace
-
-# And launch the flask service 
-FLASK_APP=imposc python3 -m imposc
+make service &
 ```
 
 The first time the service is launched it will build the bindings to the C++ library.
@@ -127,7 +118,5 @@ The first time the service is launched it will build the bindings to the C++ lib
 Then initialise and launch the front-end:
 
 ```bash
-cd ./imposc-ui
-npm install
-REACT_APP_IMPOSC_URL="http://127.0.0.1" npm run start
+make ui
 ```
