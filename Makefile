@@ -18,7 +18,6 @@ PYTHONPATH=$(PYTHON_ROOT)/src
 MARKER=.marker
 
 PORT?=5000
-URL?=localhost
 
 PYTHON=PYTHONPATH=$(PYTHONPATH) $(VENV)/python
 
@@ -75,17 +74,14 @@ cython:  $(REQUIREMENTS).out
 
 .PHONY: service
 service: cython
-	cd $(PYTHONPATH) && PYTHONPATH=$(PYTHONPATH) FLASK_APP=$(MAIN_MODULE) $(GUNICORN) --bind $(URL):$(PORT) --timeout 180 $(MAIN_MODULE):app
+	cd $(PYTHONPATH) && PYTHONPATH=$(PYTHONPATH) FLASK_APP=$(MAIN_MODULE) $(GUNICORN) --bind localhost:$(PORT) --timeout 180 $(MAIN_MODULE):app
 
 $(NODE_TARGET):
 	cd $(NODE_ROOT) && npm install
 
 .PHONY: ui
 ui: $(NODE_TARGET)
-	cd $(NODE_ROOT) && REACT_APP_IMPOSC_URL="$(URL)" REACT_APP_IMPOSC_PORT=$(PORT) npm run start
-
-.PHONY: run
-run: ui service
+	cd $(NODE_ROOT) && REACT_APP_IMPOSC_URL="http://127.0.0.1" REACT_APP_IMPOSC_PORT=$(PORT) npm start
 
 .PHONY: repl
 repl: $(REQUIREMENTS).out

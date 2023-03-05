@@ -77,5 +77,6 @@
     "python.linting.enabled": true,
     "python.analysis.extraPaths": [
         "${workspaceFolder}/imposc-service/imposcpy/src"
-    ]
+    ],
+    "cmake.configureOnOpen": false
 }
