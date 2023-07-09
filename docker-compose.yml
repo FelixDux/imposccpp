@@ -1,6 +1,6 @@
 # See https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/docker-multicontainer-migration.html
 
-version: '2.4'
+version: '3.8'
 services:
   service:
     stdin_open: true
@@ -8,7 +8,7 @@ services:
       context: ./imposc-service
       dockerfile: Dockerfile
     ports:
-      - 5000:5000
+      - 4000:4000
     mem_limit: 256m
   ui:
     stdin_open: true
@@ -16,10 +16,10 @@ services:
       context: ./imposc-ui
       dockerfile: Dockerfile
       args:
-        - REACT_APP_IMPOSC_URL=${REACT_APP_IMPOSC_URL}
-        - REACT_APP_IMPOSC_PORT=${REACT_APP_IMPOSC_PORT}
+        - REACT_APP_IMPOSC_URL=service
+        - REACT_APP_IMPOSC_PORT=4000
     ports:
-      - 80:80
+      - 80:3000
     volumes:
       - /app/node_modules
       - ./imposc-ui:/app

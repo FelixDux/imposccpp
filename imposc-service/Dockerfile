@@ -21,8 +21,9 @@ ENV PYTHONPATH=/usr/src/proj/imposcpy/src
 RUN cd /usr/src/proj/imposcpy/src && python setup.py build_ext --inplace
 
 # Flask environment
-ENV FLASK_APP=/usr/src/proj/imposcpy/src/imposc.py
+ENV FLASK_APP=imposc
 
 # Launch service
-EXPOSE 5000
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--timeout", "180", "imposc:app"]
+EXPOSE 4000
+ENV CWD=/usr/src/proj/imposcpy/src
+CMD ["gunicorn", "--bind", "localhost:4000", "--timeout", "180", "imposc:app"]

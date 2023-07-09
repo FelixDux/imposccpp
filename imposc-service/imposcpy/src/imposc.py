@@ -9,7 +9,7 @@ import logging
 import sys
 
 app = Flask(__name__)
-CORS(app, resources=r'/*')
+CORS(app)
 
 # Set up logging
 sh = logging.StreamHandler(sys.stderr)

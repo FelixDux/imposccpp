@@ -44,7 +44,7 @@ class Config {
      */
     plotterURL() {
         if (this.value('IMPOSC_PORT') === '') {
-            return this.value('IMPOSC_URL');
+            return  this.value('IMPOSC_URL');
         }
         else {
             return this.value('IMPOSC_URL') + ':' + this.value('IMPOSC_PORT');
