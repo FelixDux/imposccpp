@@ -96,9 +96,9 @@ The corresponding project structure is as follows:
 
 ## Installing and Running
 
-If you have docker installed and are running in a `bash` or `zsh` environment, the simplest way to get started is to run `docker-compose up`. Then you can then access the front-end at http://localhost:80.
+If you have docker installed and are running in a `bash` environment, the simplest way to get started is to run `docker-compose up`. Then you can then access the front-end at http://localhost:80. However, well known issues with Docker networking on MacOS (see e.g. https://stackoverflow.com/questions/46286741/is-there-a-workaround-to-use-the-hosts-network-in-docker-for-mac&usg=AOvVaw3jWqVAMNW5IH3u_4c5khsj&opi=89978449)
 
-If you prefer not to use docker, then you will need the following installed (NOTE: **the following instructions have only been successfully tested on Ubuntu and MacOS**):
+If you encounter this limitation, or just prefer not to use docker, then you will need the following installed (NOTE: **the following instructions have only been successfully tested on Ubuntu and MacOS**):
 
 - [Python](https://www.python.org/) 3.8 or above
 - A C++ compiler compatible with Cython, which in practice means `gcc` - see the [Cython docs](https://cython.readthedocs.io/en/latest/index.html) (on MacOS you need to install `gcc` -- the native `gcc` command is just a front end to `clang`)

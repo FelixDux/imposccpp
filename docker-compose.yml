@@ -1,6 +1,6 @@
 # See https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/docker-multicontainer-migration.html
 
-version: '3.8'
+version: "3.8"
 services:
   service:
     stdin_open: true
