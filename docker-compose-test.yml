@@ -1,0 +1,30 @@
+version: '3'
+services:
+  test-ui:
+    stdin_open: true
+    build:
+      context: ./imposc-ui
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./imposc-ui:/app
+    command: ["npm", "--version"]  
+  test-cpp:
+    stdin_open: true
+    build:
+      context: ./imposc-service/imposc-cpp
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /usr/src/proj/imposc-cpp/build
+      - ./imposc-service/imposc-cpp:/usr/src/proj/imposc-cpp
+    command: ["./build/test/Test"]
+  test-service:
+    stdin_open: true
+    build:
+      context: ./imposc-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /usr/src/proj/imposc-cpp/build
+      - ./imposc-service:/usr/src/proj
+    command: ["python","-m","pytest"]
+  
