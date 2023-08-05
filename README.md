@@ -96,30 +96,21 @@ The corresponding project structure is as follows:
 
 ## Installing and Running
 
-If you have docker installed and are running in a bash environment, the simplest way to get started is to run `docker-compose up`. Alternatively you can run the development docker containers with `docker-compose -f docker-compose-dev.yml up`. Either way you can then access the front-end at http://localhost:80.
+If you have docker installed and are running in a `bash` environment, the simplest way to get started is to run `docker-compose up`. Then you can then access the front-end at http://localhost:80. However, well known issues with Docker networking on MacOS (see e.g. https://stackoverflow.com/questions/46286741/is-there-a-workaround-to-use-the-hosts-network-in-docker-for-mac&usg=AOvVaw3jWqVAMNW5IH3u_4c5khsj&opi=89978449)
 
-If you prefer not to use docker, then you will need the following installed (NOTE: **the following instructions have only been successfully tested on Ubuntu and MacOS**):
+If you encounter this limitation, or just prefer not to use docker, then you will need the following installed (NOTE: **the following instructions have only been successfully tested on Ubuntu and MacOS**):
 
 - [Python](https://www.python.org/) 3.8 or above
-- A C++ compiler compatible with Cython, which in practice means gcc - see the [Cython docs](https://cython.readthedocs.io/en/latest/index.html)
+- A C++ compiler compatible with Cython, which in practice means `gcc` - see the [Cython docs](https://cython.readthedocs.io/en/latest/index.html) (on MacOS you need to install `gcc` -- the native `gcc` command is just a front end to `clang`)
 - [CMake](https://cmake.org/) (if you want to test the C++ library yourself - it is not needed for the Cython binding)
 - [Gnuplot](http://www.gnuplot.info/)
 - [React](https://reactjs.org/)
+- `make`
 
-To get going, create a Python virtual environment inside the Python project:
+To create a Python virtual environment inside the Python project and launch the flask service
 
 ```bash
-cd ./imposc-service/imposcpy
-python3 -m venv .venv
-source ./venv/bin/activate
-python -m pip install -r requirements.txt
-# python -m pip install -r requirements-test.txt if you want to run tests
-
-# Create the Cython bindings
-cd src && python setup.py build_ext --inplace
-
-# And launch the flask service 
-FLASK_APP=imposc python -m imposc
+make service &
 ```
 
 The first time the service is launched it will build the bindings to the C++ library.
@@ -127,7 +118,7 @@ The first time the service is launched it will build the bindings to the C++ lib
 Then initialise and launch the front-end:
 
 ```bash
-cd ./imposc-ui
-npm install
-REACT_APP_IMPOSC_URL="http://127.0.0.1" npm run start
+make ui
 ```
+
+Then you can access the front-end at http://localhost:3000.

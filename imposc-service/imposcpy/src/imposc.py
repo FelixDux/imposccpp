@@ -9,7 +9,7 @@ import logging
 import sys
 
 app = Flask(__name__)
-CORS(app, resources=r'/*')
+CORS(app)
 
 # Set up logging
 sh = logging.StreamHandler(sys.stderr)
@@ -137,11 +137,24 @@ def do_action(action):
                 return abort(422, message)
             else:
                 # Return bytestream
+                def send_file_kwargs(old_version=False):
+                    """ Make sure the arguments to `send_file` are robust to changes in Python version """
+                    file_key = "attachment_filename" if old_version else "download_name"
+                    return {
+                        file_key: f"{outfile}",
+                        "mimetype": image_content_type(outfile)
+                        }
+                
                 with outfile.open(mode = "rb") as image:
-                    return send_file(
-                                io.BytesIO(image.read()),
-                                attachment_filename=f"{outfile}",
-                                mimetype = image_content_type(outfile)
-                        )
+                    try:
+                        return send_file(
+                                    io.BytesIO(image.read()),
+                                    **send_file_kwargs()
+                            )
+                    except TypeError:
+                        return send_file(
+                                    io.BytesIO(image.read()),
+                                    **send_file_kwargs(True)
+                            )
     else:
         return abort(404, f"Unknown endpoint {action}")

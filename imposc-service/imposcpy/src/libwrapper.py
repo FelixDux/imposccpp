@@ -17,7 +17,7 @@ def build_wrapper(package_name: str, library_name: str, library_dir: Path, heade
     if not package_library_file.is_file():
         package_pyx_file = package_module.with_suffix(".pyx")
 
-        setup_command = "python setup.py build_ext --inplace"
+        setup_command = "python3 setup.py build_ext --inplace"
         run([t for t in setup_command.split(' ') if t], cwd=this_dir)
 
     return importlib.import_module(package_name)

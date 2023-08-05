@@ -364,6 +364,7 @@ class PlotterInput extends React.Component {
   
     /** Retrieves and stores the action definitions from the imposc service */
     populate() {
+      console.log('Fetching:', this.props.url)
   
       fetch(this.props.url)
       .then(response => {

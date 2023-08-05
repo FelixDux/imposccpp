@@ -30,7 +30,7 @@ class Config {
     
         // Override from environment variable
         const envKey = "REACT_APP_" + key;
-        if (envKey in process.env && process.env[envKey] != '') {
+        if (envKey in process.env && process.env[envKey] !== '') {
             result = process.env[envKey];
         }
     
@@ -44,7 +44,7 @@ class Config {
      */
     plotterURL() {
         if (this.value('IMPOSC_PORT') === '') {
-            return this.value('IMPOSC_URL');
+            return  this.value('IMPOSC_URL');
         }
         else {
             return this.value('IMPOSC_URL') + ':' + this.value('IMPOSC_PORT');
